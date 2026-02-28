@@ -3,6 +3,7 @@ src/pages/trends.py
 ────────────────────
 Historical trend analysis page with anomaly detection overlay.
 """
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
@@ -34,17 +35,26 @@ def layout() -> html.Div:
             html.Div(
                 [
                     html.H2("Tendencias Históricas", className="page-title"),
-                    html.P("Análisis de patrones de degradación · Últimos 90 días", className="page-subtitle"),
+                    html.P(
+                        "Análisis de patrones de degradación · Últimos 90 días",
+                        className="page-subtitle",
+                    ),
                 ],
                 className="page-header",
             ),
-
             # ── Controls ───────────────────────────────────────────────────────
             dbc.Row(
                 [
                     dbc.Col(
                         [
-                            html.Label("Equipo", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Equipo",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="trends-equipment",
                                 options=[
@@ -60,7 +70,14 @@ def layout() -> html.Div:
                     ),
                     dbc.Col(
                         [
-                            html.Label("Variable", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Variable",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="trends-variable",
                                 options=_VARIABLE_OPTIONS,
@@ -73,7 +90,14 @@ def layout() -> html.Div:
                     ),
                     dbc.Col(
                         [
-                            html.Label("Ventana", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Ventana",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="trends-window",
                                 options=_WINDOW_OPTIONS,
@@ -86,7 +110,14 @@ def layout() -> html.Div:
                     ),
                     dbc.Col(
                         [
-                            html.Label("Opciones", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Opciones",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dbc.Checklist(
                                 id="trends-options",
                                 options=[
@@ -96,7 +127,11 @@ def layout() -> html.Div:
                                 ],
                                 value=["thresholds"],
                                 inline=True,
-                                style={"fontSize": ".82rem", "color": "#c9d1d9", "paddingTop": "8px"},
+                                style={
+                                    "fontSize": ".82rem",
+                                    "color": "#c9d1d9",
+                                    "paddingTop": "8px",
+                                },
                                 inputStyle={"marginRight": "4px"},
                             ),
                         ],
@@ -105,7 +140,6 @@ def layout() -> html.Div:
                 ],
                 className="g-3 mb-3",
             ),
-
             # ── Main trend chart ───────────────────────────────────────────────
             dbc.Row(
                 [
@@ -122,15 +156,18 @@ def layout() -> html.Div:
                 ],
                 className="g-3 mb-3",
             ),
-
             # ── Anomaly summary + Z-score chart ────────────────────────────────
             dbc.Row(
                 [
                     dbc.Col(
                         html.Div(
                             [
-                                html.Div("Z-Score (detección de anomalías)", className="chart-title"),
-                                dcc.Graph(id="trends-zscore-chart", config={"displayModeBar": False}),
+                                html.Div(
+                                    "Z-Score (detección de anomalías)", className="chart-title"
+                                ),
+                                dcc.Graph(
+                                    id="trends-zscore-chart", config={"displayModeBar": False}
+                                ),
                             ],
                             className="chart-card",
                         ),

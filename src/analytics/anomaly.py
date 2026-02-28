@@ -9,12 +9,13 @@ Algorithm: Rolling Z-score on a 24-hour sliding window.
 
 Returns a boolean mask and Z-score series for plotting.
 """
+
 from __future__ import annotations
 
 import numpy as np
 import pandas as pd
 
-DEFAULT_WINDOW = 24      # hours
+DEFAULT_WINDOW = 24  # hours
 DEFAULT_THRESHOLD = 2.5  # standard deviations
 
 
@@ -115,10 +116,14 @@ def get_anomaly_periods(
             peak_z = max(peak_z, abs(z))
         elif not is_anomaly and in_anomaly:
             in_anomaly = False
-            periods.append({"start": start_ts, "end": row[timestamp_col], "peak_zscore": round(peak_z, 2)})
+            periods.append(
+                {"start": start_ts, "end": row[timestamp_col], "peak_zscore": round(peak_z, 2)}
+            )
             peak_z = 0.0
 
     if in_anomaly and start_ts is not None:
-        periods.append({"start": start_ts, "end": df[timestamp_col].iloc[-1], "peak_zscore": round(peak_z, 2)})
+        periods.append(
+            {"start": start_ts, "end": df[timestamp_col].iloc[-1], "peak_zscore": round(peak_z, 2)}
+        )
 
     return periods

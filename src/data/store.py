@@ -13,6 +13,7 @@ Provides:
 
 Thread safety: uses check_same_thread=False + a module-level lock.
 """
+
 from __future__ import annotations
 
 import sqlite3
@@ -29,6 +30,7 @@ _DB: sqlite3.Connection | None = None
 
 
 # ── Connection ────────────────────────────────────────────────────────────────
+
 
 def _get_conn() -> sqlite3.Connection:
     global _DB
@@ -85,6 +87,7 @@ def _create_tables(conn: sqlite3.Connection) -> None:
 
 
 # ── Public API ────────────────────────────────────────────────────────────────
+
 
 def initialize_db(force_reseed: bool = False) -> None:
     """

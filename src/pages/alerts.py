@@ -3,6 +3,7 @@ src/pages/alerts.py
 ────────────────────
 Alert management page with filters and acknowledgement.
 """
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
@@ -31,20 +32,28 @@ def layout() -> html.Div:
             html.Div(
                 [
                     html.H2("Gestión de Alertas", className="page-title"),
-                    html.P("Historial y estado de alertas del sistema de monitoreo", className="page-subtitle"),
+                    html.P(
+                        "Historial y estado de alertas del sistema de monitoreo",
+                        className="page-subtitle",
+                    ),
                 ],
                 className="page-header",
             ),
-
             # ── Summary badges ─────────────────────────────────────────────────
             html.Div(id="alerts-summary-badges", className="mb-3"),
-
             # ── Filter row ─────────────────────────────────────────────────────
             dbc.Row(
                 [
                     dbc.Col(
                         [
-                            html.Label("Severidad", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Severidad",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="alerts-filter-severity",
                                 options=_SEVERITY_OPTIONS,
@@ -58,7 +67,14 @@ def layout() -> html.Div:
                     ),
                     dbc.Col(
                         [
-                            html.Label("Equipo", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Equipo",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="alerts-filter-equipment",
                                 options=_EQUIPMENT_OPTIONS,
@@ -72,7 +88,14 @@ def layout() -> html.Div:
                     ),
                     dbc.Col(
                         [
-                            html.Label("Estado", style={"fontSize": ".72rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Label(
+                                "Estado",
+                                style={
+                                    "fontSize": ".72rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                             dcc.Dropdown(
                                 id="alerts-filter-status",
                                 options=[
@@ -91,7 +114,6 @@ def layout() -> html.Div:
                 ],
                 className="g-3 mb-3",
             ),
-
             # ── Alert table ────────────────────────────────────────────────────
             html.Div(
                 html.Div(id="alerts-table"),

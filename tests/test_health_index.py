@@ -3,6 +3,7 @@ tests/test_health_index.py
 ───────────────────────────
 Tests for the composite health index calculator.
 """
+
 import numpy as np
 import pandas as pd
 
@@ -71,7 +72,10 @@ class TestThermalScore:
 
 class TestPressureScore:
     def test_mid_range_pressure_returns_high_score(self):
-        p_mid = (SAG_THRESHOLDS.hydraulic_pressure_bar["min"] + SAG_THRESHOLDS.hydraulic_pressure_bar["max"]) / 2
+        p_mid = (
+            SAG_THRESHOLDS.hydraulic_pressure_bar["min"]
+            + SAG_THRESHOLDS.hydraulic_pressure_bar["max"]
+        ) / 2
         score = _pressure_score(p_mid, SAG_THRESHOLDS)
         assert score >= 88.0
 
@@ -120,8 +124,12 @@ class TestComputeHealthSummary:
 
     def test_subscores_in_range(self, sample_sag_reading):
         summary = compute_health_summary(sample_sag_reading)
-        for score in [summary.vibration_score, summary.thermal_score,
-                      summary.pressure_score, summary.power_score]:
+        for score in [
+            summary.vibration_score,
+            summary.thermal_score,
+            summary.pressure_score,
+            summary.power_score,
+        ]:
             assert 0.0 <= score <= 100.0
 
     def test_ball_mill_healthy(self, sample_ball_reading):
@@ -167,12 +175,24 @@ class TestComputeRUL:
 class TestComputeFleetHealth:
     def test_fleet_health_is_minimum(self, now):
         summaries = [
-            HealthSummary(equipment_id="SAG-01", timestamp=now,
-                          health_index=85.0, vibration_score=90.0,
-                          thermal_score=88.0, pressure_score=80.0, power_score=82.0),
-            HealthSummary(equipment_id="BALL-01", timestamp=now,
-                          health_index=60.0, vibration_score=70.0,
-                          thermal_score=65.0, pressure_score=55.0, power_score=60.0),
+            HealthSummary(
+                equipment_id="SAG-01",
+                timestamp=now,
+                health_index=85.0,
+                vibration_score=90.0,
+                thermal_score=88.0,
+                pressure_score=80.0,
+                power_score=82.0,
+            ),
+            HealthSummary(
+                equipment_id="BALL-01",
+                timestamp=now,
+                health_index=60.0,
+                vibration_score=70.0,
+                thermal_score=65.0,
+                pressure_score=55.0,
+                power_score=60.0,
+            ),
         ]
         fleet = compute_fleet_health(summaries)
         assert fleet == 60.0

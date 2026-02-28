@@ -14,6 +14,7 @@ Weighted sub-indices (ISO 13381 guidance):
 RUL (Remaining Useful Life) estimation:
   Linear extrapolation of HI trend over last 24 h → time to reach HI = 20.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -23,6 +24,7 @@ from config.equipment import BALL_THRESHOLDS, SAG_THRESHOLDS, EquipmentThreshold
 from src.data.models import HealthSummary, SensorReading
 
 # ── Sub-index helpers ─────────────────────────────────────────────────────────
+
 
 def _vibration_score(vib: float, thr: EquipmentThresholds) -> float:
     """
@@ -161,7 +163,7 @@ def compute_rul(health_series: pd.Series, window_hours: int = 48) -> float | Non
     if len(health_series) < 4:
         return None
 
-    recent = health_series.iloc[-min(window_hours, len(health_series)):]
+    recent = health_series.iloc[-min(window_hours, len(health_series)) :]
     x = np.arange(len(recent), dtype=float)
     y = recent.values.astype(float)
 

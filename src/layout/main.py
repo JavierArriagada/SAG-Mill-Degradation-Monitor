@@ -9,6 +9,7 @@ Contains:
   - dcc.Interval for live updates
   - Navbar + page content container
 """
+
 from dash import dcc, html
 
 from src.layout.navbar import create_navbar
@@ -22,26 +23,21 @@ def create_layout() -> html.Div:
             dcc.Store(id="store-equipment", data="SAG-01"),
             dcc.Store(id="store-lang", data="es"),
             dcc.Store(id="store-ack-alerts", data=[]),  # list of acknowledged alert IDs
-
             # ── Routing ───────────────────────────────────────────────────────
             dcc.Location(id="url", refresh=False),
-
             # ── Live update interval ──────────────────────────────────────────
             dcc.Interval(
                 id="interval-live",
-                interval=30_000,   # 30 seconds
+                interval=30_000,  # 30 seconds
                 n_intervals=0,
             ),
-
             # ── Navigation bar ────────────────────────────────────────────────
             create_navbar(),
-
             # ── Page content ──────────────────────────────────────────────────
             html.Div(
                 id="page-content",
                 style={"minHeight": "calc(100vh - 60px)"},
             ),
-
             # ── Footer ────────────────────────────────────────────────────────
             html.Footer(
                 [

@@ -3,6 +3,7 @@ tests/conftest.py
 ─────────────────
 Shared pytest fixtures for SAG Monitor test suite.
 """
+
 import os
 from datetime import UTC, datetime
 
@@ -28,6 +29,7 @@ def now() -> datetime:
 @pytest.fixture
 def sample_sag_reading(now):
     from src.data.models import DegradationMode, SensorReading
+
     return SensorReading(
         timestamp=now,
         equipment_id="SAG-01",
@@ -47,6 +49,7 @@ def sample_sag_reading(now):
 @pytest.fixture
 def sample_ball_reading(now):
     from src.data.models import DegradationMode, SensorReading
+
     return SensorReading(
         timestamp=now,
         equipment_id="BALL-01",
@@ -65,10 +68,11 @@ def sample_ball_reading(now):
 def degraded_sag_reading(now):
     """A SAG mill reading in bearing degradation (severe)."""
     from src.data.models import DegradationMode, SensorReading
+
     return SensorReading(
         timestamp=now,
         equipment_id="SAG-01",
-        vibration_mms=8.5,    # Zone D — critical
+        vibration_mms=8.5,  # Zone D — critical
         bearing_temp_c=88.0,  # Above alert threshold
         hydraulic_pressure_bar=145.0,
         power_kw=13_200.0,

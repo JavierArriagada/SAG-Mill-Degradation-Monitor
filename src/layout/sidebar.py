@@ -3,6 +3,7 @@ src/layout/sidebar.py
 ──────────────────────
 Equipment selector sidebar (shown on /equipment page).
 """
+
 import dash_bootstrap_components as dbc
 from dash import html
 

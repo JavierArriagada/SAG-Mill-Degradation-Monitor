@@ -29,19 +29,27 @@ class TestSensorReading:
     def test_vibration_bounds(self, now):
         with pytest.raises(ValidationError):
             SensorReading(
-                timestamp=now, equipment_id="SAG-01",
+                timestamp=now,
+                equipment_id="SAG-01",
                 vibration_mms=-1.0,  # invalid
-                bearing_temp_c=60.0, hydraulic_pressure_bar=150.0,
-                power_kw=12000.0, load_pct=40.0, throughput_tph=2000.0,
+                bearing_temp_c=60.0,
+                hydraulic_pressure_bar=150.0,
+                power_kw=12000.0,
+                load_pct=40.0,
+                throughput_tph=2000.0,
             )
 
     def test_health_index_bounds(self, now):
         with pytest.raises(ValidationError):
             SensorReading(
-                timestamp=now, equipment_id="SAG-01",
-                vibration_mms=1.5, bearing_temp_c=60.0,
-                hydraulic_pressure_bar=150.0, power_kw=12000.0,
-                load_pct=40.0, throughput_tph=2000.0,
+                timestamp=now,
+                equipment_id="SAG-01",
+                vibration_mms=1.5,
+                bearing_temp_c=60.0,
+                hydraulic_pressure_bar=150.0,
+                power_kw=12000.0,
+                load_pct=40.0,
+                throughput_tph=2000.0,
                 health_index=150.0,  # invalid (> 100)
             )
 

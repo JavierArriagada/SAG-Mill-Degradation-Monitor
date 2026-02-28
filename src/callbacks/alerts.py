@@ -3,6 +3,7 @@ src/callbacks/alerts.py
 ────────────────────────
 Alert management page callbacks.
 """
+
 from __future__ import annotations
 
 import dash_bootstrap_components as dbc
@@ -53,15 +54,26 @@ def _build_table(df: pd.DataFrame, acked_ids: list[str]) -> html.Div:
                         style={"color": MUTED, "fontSize": ".78rem"},
                     ),
                     html.Td(
-                        html.Span(row["equipment_id"], style={"color": "#58a6ff", "fontSize": ".82rem", "fontWeight": "600"}),
+                        html.Span(
+                            row["equipment_id"],
+                            style={"color": "#58a6ff", "fontSize": ".82rem", "fontWeight": "600"},
+                        ),
                     ),
                     html.Td(_severity_badge(row["severity"])),
                     html.Td(row["variable"], style={"fontSize": ".78rem", "color": "#c9d1d9"}),
                     html.Td(f"{row['value']:.3f}", style={"fontSize": ".78rem"}),
-                    html.Td(f"{row['threshold']:.3f}", style={"fontSize": ".78rem", "color": MUTED}),
+                    html.Td(
+                        f"{row['threshold']:.3f}", style={"fontSize": ".78rem", "color": MUTED}
+                    ),
                     html.Td(
                         row["message"],
-                        style={"fontSize": ".72rem", "color": MUTED, "maxWidth": "260px", "overflow": "hidden", "textOverflow": "ellipsis"},
+                        style={
+                            "fontSize": ".72rem",
+                            "color": MUTED,
+                            "maxWidth": "260px",
+                            "overflow": "hidden",
+                            "textOverflow": "ellipsis",
+                        },
                     ),
                     html.Td(
                         html.Button(
@@ -92,7 +104,19 @@ def _build_table(df: pd.DataFrame, acked_ids: list[str]) -> html.Div:
             [
                 html.Thead(
                     html.Tr(
-                        [html.Th(h) for h in ["Fecha/Hora", "Equipo", "Severidad", "Variable", "Valor", "Umbral", "Mensaje", "Estado"]],
+                        [
+                            html.Th(h)
+                            for h in [
+                                "Fecha/Hora",
+                                "Equipo",
+                                "Severidad",
+                                "Variable",
+                                "Valor",
+                                "Umbral",
+                                "Mensaje",
+                                "Estado",
+                            ]
+                        ],
                         style={"color": MUTED, "fontSize": ".68rem", "textTransform": "uppercase"},
                     )
                 ),
@@ -105,7 +129,6 @@ def _build_table(df: pd.DataFrame, acked_ids: list[str]) -> html.Div:
 
 
 def register(app) -> None:
-
     @app.callback(
         [
             Output("alerts-table", "children"),
@@ -129,7 +152,10 @@ def register(app) -> None:
         df = store.get_alerts(days=30, limit=500)
 
         if df.empty:
-            table = html.Div("Sin alertas en los últimos 30 días.", style={"color": MUTED, "padding": "20px", "textAlign": "center"})
+            table = html.Div(
+                "Sin alertas en los últimos 30 días.",
+                style={"color": MUTED, "padding": "20px", "textAlign": "center"},
+            )
             badges = html.Div()
             return table, badges
 
@@ -155,12 +181,32 @@ def register(app) -> None:
                 dbc.Col(
                     html.Div(
                         [
-                            html.Div(str(counts.get(sev, 0)), style={"fontSize": "1.4rem", "fontWeight": "700", "color": SEVERITY_COLORS.get(sev, MUTED)}),
-                            html.Div(SEVERITY_LABELS_ES.get(sev, sev), style={"fontSize": ".65rem", "color": MUTED, "textTransform": "uppercase"}),
+                            html.Div(
+                                str(counts.get(sev, 0)),
+                                style={
+                                    "fontSize": "1.4rem",
+                                    "fontWeight": "700",
+                                    "color": SEVERITY_COLORS.get(sev, MUTED),
+                                },
+                            ),
+                            html.Div(
+                                SEVERITY_LABELS_ES.get(sev, sev),
+                                style={
+                                    "fontSize": ".65rem",
+                                    "color": MUTED,
+                                    "textTransform": "uppercase",
+                                },
+                            ),
                         ],
-                        style={"backgroundColor": CARD_BG, "border": f"1px solid {BORDER}", "borderRadius": "8px", "padding": "10px 16px"},
+                        style={
+                            "backgroundColor": CARD_BG,
+                            "border": f"1px solid {BORDER}",
+                            "borderRadius": "8px",
+                            "padding": "10px 16px",
+                        },
                     ),
-                    xs=6, md=3,
+                    xs=6,
+                    md=3,
                 )
                 for sev in ["critical", "alert", "warning", "info"]
             ],

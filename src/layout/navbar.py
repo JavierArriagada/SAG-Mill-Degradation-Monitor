@@ -3,6 +3,7 @@ src/layout/navbar.py
 ─────────────────────
 Navigation bar with page links and language toggle.
 """
+
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -19,7 +20,9 @@ def create_navbar() -> dbc.Navbar:
                 dbc.NavbarBrand(
                     [
                         html.Span("⚙", style={"marginRight": "8px", "fontSize": "1.1rem"}),
-                        html.Span("SAG Monitor", style={"fontWeight": "700", "letterSpacing": ".04em"}),
+                        html.Span(
+                            "SAG Monitor", style={"fontWeight": "700", "letterSpacing": ".04em"}
+                        ),
                     ],
                     href="/",
                     style={"color": ACCENT, "textDecoration": "none"},
@@ -28,10 +31,24 @@ def create_navbar() -> dbc.Navbar:
                 dbc.Collapse(
                     dbc.Nav(
                         [
-                            dbc.NavItem(dbc.NavLink("Resumen", href="/", id="nav-overview", active="exact")),
-                            dbc.NavItem(dbc.NavLink("Equipos", href="/equipment", id="nav-equipment", active="exact")),
-                            dbc.NavItem(dbc.NavLink("Alertas", href="/alerts", id="nav-alerts", active="exact")),
-                            dbc.NavItem(dbc.NavLink("Tendencias", href="/trends", id="nav-trends", active="exact")),
+                            dbc.NavItem(
+                                dbc.NavLink("Resumen", href="/", id="nav-overview", active="exact")
+                            ),
+                            dbc.NavItem(
+                                dbc.NavLink(
+                                    "Equipos", href="/equipment", id="nav-equipment", active="exact"
+                                )
+                            ),
+                            dbc.NavItem(
+                                dbc.NavLink(
+                                    "Alertas", href="/alerts", id="nav-alerts", active="exact"
+                                )
+                            ),
+                            dbc.NavItem(
+                                dbc.NavLink(
+                                    "Tendencias", href="/trends", id="nav-trends", active="exact"
+                                )
+                            ),
                             # Language toggle
                             dbc.NavItem(
                                 html.Div(
@@ -49,7 +66,12 @@ def create_navbar() -> dbc.Navbar:
                                             style=_lang_btn_style(False),
                                         ),
                                     ],
-                                    style={"display": "flex", "gap": "4px", "alignItems": "center", "marginLeft": "12px"},
+                                    style={
+                                        "display": "flex",
+                                        "gap": "4px",
+                                        "alignItems": "center",
+                                        "marginLeft": "12px",
+                                    },
                                 )
                             ),
                         ],

@@ -11,6 +11,7 @@ Usage:
     set_lang("en")
     t("nav.overview")              # → "Overview"
 """
+
 from __future__ import annotations
 
 import json

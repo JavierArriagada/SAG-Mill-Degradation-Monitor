@@ -9,6 +9,7 @@ Startup sequence:
   3. Register all callbacks
   4. Run dev server (or expose `server` for gunicorn in production)
 """
+
 import dash
 import dash_bootstrap_components as dbc
 

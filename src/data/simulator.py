@@ -14,6 +14,7 @@ Design:
   - Degradation events have random start/duration within the history window
   - Each event can be bearing, liner, hydraulic (SAG) or bearing, misalignment (Ball)
 """
+
 from __future__ import annotations
 
 import uuid
@@ -43,7 +44,7 @@ BASELINES: dict[str, dict] = {
         "hydraulic_pressure_bar": 150.0,
         "power_kw": 12_800.0,
         "load_pct": 40.0,
-        "liner_wear_pct": 15.0,     # starts at 15%, wears toward 80%
+        "liner_wear_pct": 15.0,  # starts at 15%, wears toward 80%
         "seal_condition_pct": 95.0,  # starts healthy
         "throughput_tph": 2_150.0,
     },
@@ -83,12 +84,14 @@ NOISE: dict[str, dict] = {
 @dataclass
 class DegradationEvent:
     mode: str
-    start_hour: int   # index into the hourly timeline
+    start_hour: int  # index into the hourly timeline
     duration_hours: int  # how long the event lasts
-    severity: float   # peak degradation at end (0..1)
+    severity: float  # peak degradation at end (0..1)
 
 
-def _plan_events(equipment_id: str, total_hours: int, rng: np.random.Generator) -> list[DegradationEvent]:
+def _plan_events(
+    equipment_id: str, total_hours: int, rng: np.random.Generator
+) -> list[DegradationEvent]:
     """Randomly plan 1–3 degradation events within the history window."""
     eq = EQUIPMENT_CONFIG[equipment_id]
     modes = eq["degradation_modes"]
@@ -99,10 +102,14 @@ def _plan_events(equipment_id: str, total_hours: int, rng: np.random.Generator) 
         mode = rng.choice(modes)
         # Events shouldn't overlap; use last 70% of history for realism
         start = int(rng.integers(total_hours // 4, total_hours * 3 // 4))
-        duration = int(rng.integers(48, 240))   # 2–10 days
+        duration = int(rng.integers(48, 240))  # 2–10 days
         duration = min(duration, total_hours - start)
         severity = float(rng.uniform(0.4, 0.95))
-        events.append(DegradationEvent(mode=mode, start_hour=start, duration_hours=duration, severity=severity))
+        events.append(
+            DegradationEvent(
+                mode=mode, start_hour=start, duration_hours=duration, severity=severity
+            )
+        )
 
     # Sort chronologically
     events.sort(key=lambda e: e.start_hour)
@@ -134,8 +141,12 @@ def _generate_sag_reading(
     pres = base["hydraulic_pressure_bar"] + rng.normal(0, noise["hydraulic_pressure_bar"])
     pwr = base["power_kw"] + rng.normal(0, noise["power_kw"])
     load = base["load_pct"] + rng.normal(0, noise["load_pct"])
-    liner_wear = min(100.0, base["liner_wear_pct"] + hour * 0.008 + rng.normal(0, noise["liner_wear_pct"]))
-    seal = max(0.0, base["seal_condition_pct"] - hour * 0.003 + rng.normal(0, noise["seal_condition_pct"]))
+    liner_wear = min(
+        100.0, base["liner_wear_pct"] + hour * 0.008 + rng.normal(0, noise["liner_wear_pct"])
+    )
+    seal = max(
+        0.0, base["seal_condition_pct"] - hour * 0.003 + rng.normal(0, noise["seal_condition_pct"])
+    )
     tph = base["throughput_tph"] + rng.normal(0, noise["throughput_tph"])
 
     mode = DegradationMode.NORMAL
@@ -213,7 +224,10 @@ def _generate_ball_reading(
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
-def generate_history(seed: int = settings.SIMULATION_SEED, days: int = settings.HISTORY_DAYS) -> dict[str, list[SensorReading]]:
+
+def generate_history(
+    seed: int = settings.SIMULATION_SEED, days: int = settings.HISTORY_DAYS
+) -> dict[str, list[SensorReading]]:
     """
     Generate `days` × 24 hourly readings for each equipment.
     Returns dict keyed by equipment_id.
@@ -228,8 +242,12 @@ def generate_history(seed: int = settings.SIMULATION_SEED, days: int = settings.
     sag_events = _plan_events("SAG-01", total_hours, rng)
     ball_events = _plan_events("BALL-01", total_hours, rng)
 
-    sag_readings = [_generate_sag_reading(h, timestamps[h], sag_events, rng) for h in range(total_hours)]
-    ball_readings = [_generate_ball_reading(h, timestamps[h], ball_events, rng) for h in range(total_hours)]
+    sag_readings = [
+        _generate_sag_reading(h, timestamps[h], sag_events, rng) for h in range(total_hours)
+    ]
+    ball_readings = [
+        _generate_ball_reading(h, timestamps[h], ball_events, rng) for h in range(total_hours)
+    ]
 
     return {"SAG-01": sag_readings, "BALL-01": ball_readings}
 
@@ -259,11 +277,24 @@ def derive_alerts(readings: list[SensorReading], equipment_id: str) -> list[Aler
 
     for reading in readings:
         checks = [
-            ("vibration_mms", reading.vibration_mms, thresholds.vibration.zone_b, thresholds.vibration.zone_c),
-            ("bearing_temp_c", reading.bearing_temp_c,
-             thresholds.bearing_temp_c["warning"], thresholds.bearing_temp_c["alert"]),
-            ("hydraulic_pressure_bar", reading.hydraulic_pressure_bar,
-             None, thresholds.hydraulic_pressure_bar["critical_high"]),
+            (
+                "vibration_mms",
+                reading.vibration_mms,
+                thresholds.vibration.zone_b,
+                thresholds.vibration.zone_c,
+            ),
+            (
+                "bearing_temp_c",
+                reading.bearing_temp_c,
+                thresholds.bearing_temp_c["warning"],
+                thresholds.bearing_temp_c["alert"],
+            ),
+            (
+                "hydraulic_pressure_bar",
+                reading.hydraulic_pressure_bar,
+                None,
+                thresholds.hydraulic_pressure_bar["critical_high"],
+            ),
         ]
 
         for variable, value, warn_thresh, alert_thresh in checks:
@@ -280,17 +311,21 @@ def derive_alerts(readings: list[SensorReading], equipment_id: str) -> list[Aler
                 continue
 
             if not currently:
-                alerts.append(Alert(
-                    id=str(uuid.uuid4()),
-                    timestamp=reading.timestamp,
-                    equipment_id=equipment_id,
-                    severity=severity.value,
-                    category=variable.split("_")[0] if "_" in variable else variable,
-                    variable=variable,
-                    value=round(value, 3),
-                    threshold=alert_thresh if value > (alert_thresh or 0) else (warn_thresh or 0),
-                    message=f"{equipment_id}: {variable} = {value:.2f} (umbral: {alert_thresh or warn_thresh:.2f})",
-                ))
+                alerts.append(
+                    Alert(
+                        id=str(uuid.uuid4()),
+                        timestamp=reading.timestamp,
+                        equipment_id=equipment_id,
+                        severity=severity.value,
+                        category=variable.split("_")[0] if "_" in variable else variable,
+                        variable=variable,
+                        value=round(value, 3),
+                        threshold=alert_thresh
+                        if value > (alert_thresh or 0)
+                        else (warn_thresh or 0),
+                        message=f"{equipment_id}: {variable} = {value:.2f} (umbral: {alert_thresh or warn_thresh:.2f})",
+                    )
+                )
                 in_alert[alert_key] = True
 
     return alerts

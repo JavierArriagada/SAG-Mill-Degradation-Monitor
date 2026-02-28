@@ -64,7 +64,10 @@ class TestGenerateHistory:
         h1 = generate_history(seed=1, days=2)
         h2 = generate_history(seed=2, days=2)
         # At least some readings should differ
-        diffs = [r1.vibration_mms != r2.vibration_mms for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"], strict=False)]
+        diffs = [
+            r1.vibration_mms != r2.vibration_mms
+            for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"], strict=False)
+        ]
         assert any(diffs)
 
     def test_contains_degradation_events(self):
@@ -80,7 +83,11 @@ class TestDeriveAlerts:
     def test_no_alerts_for_healthy_readings(self):
         history = generate_history(seed=42, days=3)
         # Get only normal readings
-        normal = [r for r in history["SAG-01"] if r.degradation_mode == DegradationMode.NORMAL and r.vibration_mms < 2.3]
+        normal = [
+            r
+            for r in history["SAG-01"]
+            if r.degradation_mode == DegradationMode.NORMAL and r.vibration_mms < 2.3
+        ]
         if normal:
             alerts = derive_alerts(normal[:20], "SAG-01")
             # Should have few/no vibration alerts in zone A
@@ -124,6 +131,7 @@ class TestRealtimeReading:
 class TestToDataframe:
     def test_returns_dataframe(self):
         import pandas as pd
+
         history = generate_history(seed=42, days=2)
         df = to_dataframe(history["SAG-01"])
         assert isinstance(df, pd.DataFrame)
@@ -135,12 +143,14 @@ class TestToDataframe:
 class TestDegradationProgress:
     def test_none_outside_event(self):
         from src.data.simulator import DegradationEvent
+
         event = DegradationEvent(mode="bearing", start_hour=100, duration_hours=48, severity=0.8)
         assert _degradation_progress(50, event) is None
         assert _degradation_progress(200, event) is None
 
     def test_returns_progress_inside_event(self):
         from src.data.simulator import DegradationEvent
+
         event = DegradationEvent(mode="bearing", start_hour=0, duration_hours=100, severity=1.0)
         t = _degradation_progress(50, event)
         assert t is not None

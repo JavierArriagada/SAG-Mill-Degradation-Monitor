@@ -3,6 +3,7 @@ config/settings.py
 ──────────────────
 Application configuration loaded from environment variables.
 """
+
 import os
 from dataclasses import dataclass
 

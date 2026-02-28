@@ -8,6 +8,7 @@ Provides:
   - Dynamic adaptive thresholds based on historical baseline statistics
   - Threshold band generation for Plotly chart overlays
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -23,7 +24,7 @@ class ThresholdBand:
     warning: float | None
     alert: float | None
     critical: float | None
-    lower_bound: float | None = None   # e.g., minimum pressure
+    lower_bound: float | None = None  # e.g., minimum pressure
 
 
 def get_static_thresholds(equipment_id: str, variable: str) -> ThresholdBand:
@@ -96,7 +97,7 @@ def compute_dynamic_thresholds(
     Returns:
         ThresholdBand with dynamically computed levels
     """
-    baseline = series.iloc[:min(baseline_window, len(series))]
+    baseline = series.iloc[: min(baseline_window, len(series))]
     mu = float(baseline.mean())
     sigma = float(baseline.std())
 

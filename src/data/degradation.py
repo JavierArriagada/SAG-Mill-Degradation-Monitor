@@ -11,6 +11,7 @@ Modes implemented:
 
 ISO 13381: prognostics framework for condition-based maintenance.
 """
+
 from __future__ import annotations
 
 from enum import Enum
@@ -21,12 +22,13 @@ import numpy as np
 class DegradationStage(str, Enum):
     HEALTHY = "healthy"
     INCIPIENT = "incipient"  # 0–20%
-    MODERATE = "moderate"   # 20–50%
-    SEVERE = "severe"       # 50–80%
-    CRITICAL = "critical"   # 80–100%
+    MODERATE = "moderate"  # 20–50%
+    SEVERE = "severe"  # 50–80%
+    CRITICAL = "critical"  # 80–100%
 
 
 # ── Bearing degradation ───────────────────────────────────────────────────────
+
 
 def bearing_degradation(
     t: float,
@@ -58,8 +60,8 @@ def bearing_degradation(
     else:
         # Severe → critical: exponential runaway
         tn = (t - 0.65) / 0.35
-        vib_f = 3.4 + 6.0 * tn ** 1.8
-        temp_f = 1.22 + 0.30 * tn ** 1.5
+        vib_f = 3.4 + 6.0 * tn**1.8
+        temp_f = 1.22 + 0.30 * tn**1.5
 
     noise_vib = rng.normal(0.0, 0.06 * vib_f)
     noise_temp = rng.normal(0.0, 0.4)
@@ -71,6 +73,7 @@ def bearing_degradation(
 
 
 # ── Liner wear degradation ────────────────────────────────────────────────────
+
 
 def liner_degradation(
     t: float,
@@ -85,7 +88,7 @@ def liner_degradation(
     Returns:
         (power_kw, load_pct)
     """
-    power_factor = 1.0 + 0.10 * t + 0.08 * t ** 2
+    power_factor = 1.0 + 0.10 * t + 0.08 * t**2
     load_noise_scale = 1.0 + 3.0 * t
 
     power = base_power * power_factor + rng.normal(0.0, 200.0 * power_factor)
@@ -99,6 +102,7 @@ def liner_degradation(
 
 # ── Hydraulic degradation ─────────────────────────────────────────────────────
 
+
 def hydraulic_degradation(
     t: float,
     base_pressure: float,
@@ -111,13 +115,14 @@ def hydraulic_degradation(
     Returns:
         pressure_bar
     """
-    drop = base_pressure * (0.12 * t + 0.06 * t ** 2)
+    drop = base_pressure * (0.12 * t + 0.06 * t**2)
     noise_scale = 4.0 * (1.0 + 4.0 * t)
     pressure = base_pressure - drop + rng.normal(0.0, noise_scale)
     return float(np.clip(pressure, 0.0, 299.0))
 
 
 # ── Misalignment degradation ──────────────────────────────────────────────────
+
 
 def misalignment_degradation(
     t: float,
@@ -131,12 +136,13 @@ def misalignment_degradation(
     Returns:
         vibration_mms
     """
-    vib_f = 1.0 + 1.2 * t + 2.5 * t ** 2
+    vib_f = 1.0 + 1.2 * t + 2.5 * t**2
     noise = rng.normal(0.0, 0.08 * vib_f)
     return float(np.clip(base_vib * vib_f + noise, 0.0, 49.0))
 
 
 # ── Utility ───────────────────────────────────────────────────────────────────
+
 
 def classify_stage(t: float) -> DegradationStage:
     """Map normalized degradation progress [0, 1] to a named stage."""

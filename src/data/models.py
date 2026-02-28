@@ -3,6 +3,7 @@ src/data/models.py
 ──────────────────
 Pydantic v2 data models for sensor readings, alerts, and health summaries.
 """
+
 from datetime import datetime
 from enum import Enum
 

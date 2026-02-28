@@ -5,6 +5,7 @@ Executive overview page.
 
 Static structure; dynamic KPI data injected via callbacks.
 """
+
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -27,10 +28,8 @@ def layout() -> html.Div:
                 ],
                 className="page-header",
             ),
-
             # ── Fleet KPI banner (dynamic) ────────────────────────────────────
             html.Div(id="overview-kpi-banner", className="mb-4"),
-
             # ── Health gauges row (dynamic) ───────────────────────────────────
             dbc.Row(
                 [
@@ -57,10 +56,8 @@ def layout() -> html.Div:
                 ],
                 className="g-3 mb-3",
             ),
-
             # ── Equipment status cards row (dynamic) ──────────────────────────
             html.Div(id="overview-status-cards", className="mb-3"),
-
             # ── Recent alerts summary ─────────────────────────────────────────
             dbc.Row(
                 [

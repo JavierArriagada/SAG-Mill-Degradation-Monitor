@@ -3,6 +3,7 @@ config/alerts.py
 ────────────────
 Alert severity levels, categories, and display configuration.
 """
+
 from enum import Enum
 
 

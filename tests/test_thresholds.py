@@ -3,6 +3,7 @@ tests/test_thresholds.py
 ─────────────────────────
 Tests for the threshold engine.
 """
+
 import numpy as np
 import pandas as pd
 
@@ -18,8 +19,8 @@ from src.analytics.thresholds import (
 class TestGetStaticThresholds:
     def test_vibration_thresholds_sag(self):
         band = get_static_thresholds("SAG-01", "vibration_mms")
-        assert band.warning == 2.3   # ISO 10816 zone_a
-        assert band.alert == 4.5     # zone_b
+        assert band.warning == 2.3  # ISO 10816 zone_a
+        assert band.alert == 4.5  # zone_b
         assert band.critical == 7.1  # zone_c
 
     def test_vibration_thresholds_ball(self):

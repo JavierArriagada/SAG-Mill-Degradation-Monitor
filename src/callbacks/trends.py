@@ -3,6 +3,7 @@ src/callbacks/trends.py
 ────────────────────────
 Historical trends page callbacks.
 """
+
 from __future__ import annotations
 
 import pandas as pd
@@ -46,7 +47,6 @@ def _layout(height: int = 300) -> dict:
 
 
 def register(app) -> None:
-
     @app.callback(
         [
             Output("trends-main-chart", "figure"),
@@ -62,7 +62,9 @@ def register(app) -> None:
             Input("interval-live", "n_intervals"),
         ],
     )
-    def update_trends(equipment_id: str, variable: str, window_hours: int, options: list, n_intervals: int):
+    def update_trends(
+        equipment_id: str, variable: str, window_hours: int, options: list, n_intervals: int
+    ):
         options = options or []
         df = store.get_readings(equipment_id, hours=int(window_hours))
 
@@ -106,17 +108,45 @@ def register(app) -> None:
         if "thresholds" in options:
             band = get_static_thresholds(equipment_id, variable)
             if band.warning:
-                fig.add_hline(y=band.warning, line_dash="dot", line_color="#e8a020", line_width=1,
-                              annotation_text="Warn", annotation_font_color="#e8a020", annotation_font_size=9)
+                fig.add_hline(
+                    y=band.warning,
+                    line_dash="dot",
+                    line_color="#e8a020",
+                    line_width=1,
+                    annotation_text="Warn",
+                    annotation_font_color="#e8a020",
+                    annotation_font_size=9,
+                )
             if band.alert:
-                fig.add_hline(y=band.alert, line_dash="dash", line_color="#f0883e", line_width=1,
-                              annotation_text="Alert", annotation_font_color="#f0883e", annotation_font_size=9)
+                fig.add_hline(
+                    y=band.alert,
+                    line_dash="dash",
+                    line_color="#f0883e",
+                    line_width=1,
+                    annotation_text="Alert",
+                    annotation_font_color="#f0883e",
+                    annotation_font_size=9,
+                )
             if band.critical:
-                fig.add_hline(y=band.critical, line_dash="solid", line_color="#da3633", line_width=1,
-                              annotation_text="Crit", annotation_font_color="#da3633", annotation_font_size=9)
+                fig.add_hline(
+                    y=band.critical,
+                    line_dash="solid",
+                    line_color="#da3633",
+                    line_width=1,
+                    annotation_text="Crit",
+                    annotation_font_color="#da3633",
+                    annotation_font_size=9,
+                )
             if band.lower_bound:
-                fig.add_hline(y=band.lower_bound, line_dash="dot", line_color="#e8a020", line_width=1,
-                              annotation_text="Min", annotation_font_color="#e8a020", annotation_font_size=9)
+                fig.add_hline(
+                    y=band.lower_bound,
+                    line_dash="dot",
+                    line_color="#e8a020",
+                    line_width=1,
+                    annotation_text="Min",
+                    annotation_font_color="#e8a020",
+                    annotation_font_size=9,
+                )
 
         # Anomaly markers
         anomaly_periods = []
@@ -150,10 +180,24 @@ def register(app) -> None:
         )
 
         # Threshold lines at ±2.5
-        z_fig.add_hline(y=2.5, line_dash="dash", line_color="#da3633", line_width=1,
-                         annotation_text="+2.5σ", annotation_font_color="#da3633", annotation_font_size=9)
-        z_fig.add_hline(y=-2.5, line_dash="dash", line_color="#da3633", line_width=1,
-                         annotation_text="-2.5σ", annotation_font_color="#da3633", annotation_font_size=9)
+        z_fig.add_hline(
+            y=2.5,
+            line_dash="dash",
+            line_color="#da3633",
+            line_width=1,
+            annotation_text="+2.5σ",
+            annotation_font_color="#da3633",
+            annotation_font_size=9,
+        )
+        z_fig.add_hline(
+            y=-2.5,
+            line_dash="dash",
+            line_color="#da3633",
+            line_width=1,
+            annotation_text="-2.5σ",
+            annotation_font_color="#da3633",
+            annotation_font_size=9,
+        )
         z_fig.add_hline(y=0, line_dash="dot", line_color="#8b949e", line_width=0.8)
 
         # Shade anomaly regions
@@ -176,22 +220,54 @@ def register(app) -> None:
         anomaly_pct = 100.0 * n_anomaly_pts / total_pts if total_pts > 0 else 0.0
 
         summary_items = [
-            html.Div([
-                html.Div(f"{n_anomaly_pts}", style={"fontSize": "1.8rem", "fontWeight": "700", "color": "#da3633" if n_anomaly_pts > 0 else "#2ea44f"}),
-                html.Div("Puntos anómalos", style={"fontSize": ".7rem", "color": MUTED}),
-            ], style={"marginBottom": "10px"}),
-            html.Div([
-                html.Div(f"{anomaly_pct:.1f}%", style={"fontSize": "1.2rem", "fontWeight": "700", "color": MUTED}),
-                html.Div("del período", style={"fontSize": ".7rem", "color": MUTED}),
-            ], style={"marginBottom": "10px"}),
-            html.Div([
-                html.Div(f"{len(anomaly_periods)}", style={"fontSize": "1.2rem", "fontWeight": "700", "color": "#e8a020"}),
-                html.Div("Eventos anómalos", style={"fontSize": ".7rem", "color": MUTED}),
-            ], style={"marginBottom": "14px"}),
+            html.Div(
+                [
+                    html.Div(
+                        f"{n_anomaly_pts}",
+                        style={
+                            "fontSize": "1.8rem",
+                            "fontWeight": "700",
+                            "color": "#da3633" if n_anomaly_pts > 0 else "#2ea44f",
+                        },
+                    ),
+                    html.Div("Puntos anómalos", style={"fontSize": ".7rem", "color": MUTED}),
+                ],
+                style={"marginBottom": "10px"},
+            ),
+            html.Div(
+                [
+                    html.Div(
+                        f"{anomaly_pct:.1f}%",
+                        style={"fontSize": "1.2rem", "fontWeight": "700", "color": MUTED},
+                    ),
+                    html.Div("del período", style={"fontSize": ".7rem", "color": MUTED}),
+                ],
+                style={"marginBottom": "10px"},
+            ),
+            html.Div(
+                [
+                    html.Div(
+                        f"{len(anomaly_periods)}",
+                        style={"fontSize": "1.2rem", "fontWeight": "700", "color": "#e8a020"},
+                    ),
+                    html.Div("Eventos anómalos", style={"fontSize": ".7rem", "color": MUTED}),
+                ],
+                style={"marginBottom": "14px"},
+            ),
         ]
 
         if anomaly_periods:
-            summary_items.append(html.Div("Eventos detectados:", style={"fontSize": ".7rem", "color": MUTED, "textTransform": "uppercase", "marginBottom": "6px"}))
+            summary_items.append(
+                html.Div(
+                    "Eventos detectados:",
+                    style={
+                        "fontSize": ".7rem",
+                        "color": MUTED,
+                        "textTransform": "uppercase",
+                        "marginBottom": "6px",
+                    },
+                )
+            )
             for p in anomaly_periods[:5]:
                 start = pd.to_datetime(p["start"]).strftime("%d/%m %H:%M")
                 summary_items.append(
