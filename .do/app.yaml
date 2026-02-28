@@ -1,0 +1,37 @@
+spec:
+  name: sag-monitor
+  services:
+    - name: web
+      github:
+        repo: JavierArriagada/sag-monitor
+        branch: main
+        deploy_on_push: false          # el deploy lo controla GitHub Actions CI
+      build_command: pip install -r requirements.txt
+      run_command: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 app:server
+      environment_slug: python
+      instance_count: 1
+      instance_size_slug: basic-xxs   # ajustar según carga: basic-xs, basic-s, etc.
+      http_port: 8080
+      health_check:
+        http_path: /
+        initial_delay_seconds: 20
+        period_seconds: 30
+        timeout_seconds: 10
+        failure_threshold: 3
+      envs:
+        - key: DEBUG
+          value: "false"
+        - key: PORT
+          value: "8080"
+        - key: HISTORY_DAYS
+          value: "90"
+        - key: SIMULATION_SEED
+          value: "42"
+        - key: DEFAULT_LANG
+          value: "es"
+        - key: DATABASE_URL
+          value: "sag_monitor.db"
+        - key: ALERT_RETENTION_DAYS
+          value: "30"
+        - key: UPDATE_INTERVAL_MS
+          value: "30000"

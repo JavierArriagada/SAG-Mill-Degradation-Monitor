@@ -1,4 +1,4 @@
-name: CI
+name: CI / CD
 
 on:
   push:
@@ -6,7 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+# Avoid concurrent deploys on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  # ── 1. Lint & type-check ───────────────────────────────────────────────────
   quality:
     name: Lint & Type Check
     runs-on: ubuntu-latest
@@ -40,6 +46,7 @@ jobs:
         run: mypy src/ config/
         continue-on-error: true
 
+  # ── 2. Tests ──────────────────────────────────────────────────────────────
   test:
     name: Tests
     runs-on: ubuntu-latest
@@ -67,6 +74,14 @@ jobs:
       - name: Run tests with coverage
         run: pytest --cov=src --cov=config --cov-report=term-missing --cov-report=xml
 
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 7
+
+  # ── 3. Docker build validation ─────────────────────────────────────────────
   docker:
     name: Docker Build
     runs-on: ubuntu-latest
@@ -77,3 +92,28 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t sag-monitor:ci .
+
+  # ── 4. Deploy to DigitalOcean App Platform (main branch only) ───────────────
+  deploy:
+    name: Deploy to DigitalOcean
+    runs-on: ubuntu-latest
+    needs: docker
+    # Only deploy on push to main — not on PRs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: ${{ vars.DO_APP_URL }}
+
+    steps:
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Trigger DigitalOcean App Platform deploy
+        run: doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }}
+
+      - name: Deployment triggered
+        run: |
+          echo "Deploy triggered — monitor at https://cloud.digitalocean.com/apps"
+          echo "App URL: ${{ vars.DO_APP_URL }}"
