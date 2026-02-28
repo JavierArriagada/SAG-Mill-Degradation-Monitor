@@ -15,3 +15,4 @@
 | [TS-07](troubleshooting/07-compute-rul-floating-point.md) | `compute_rul` retorna valor astronómico en serie estable |
 | [TS-08](troubleshooting/08-ruff-linting-errors.md) | 97 errores de linting ruff en `make check` | Calidad de código |
 | [TS-09](troubleshooting/09-testwatch-comportamiento.md) | `make test-watch` se "cuelga" luego de correr los tests | Tests / Dev workflow |
+| [TS-10](troubleshooting/10-docker-wsl.md) | Docker no disponible en WSL (`docker`, `docker compose`, buildx) | Docker / WSL |

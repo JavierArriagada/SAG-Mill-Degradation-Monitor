@@ -9,6 +9,7 @@ Documentación técnica completa del sistema de monitoreo predictivo de flotas d
 | Documento | Contenido |
 |---|---|
 | [architecture.md](architecture.md) | Arquitectura del sistema, flujo de datos, modelos de dominio |
+| [dev-workflow.md](dev-workflow.md) | Guía de desarrollo: flujo nativo (venv) y flujo Docker |
 | [equipment-modeling.md](equipment-modeling.md) | Modelado de equipos industriales: por qué cada variable, umbrales, plantilla general |
 | [data-model.md](data-model.md) | Modelo de datos: clases, decisiones de diseño, esquema SQLite |
 | [data-flow.md](data-flow.md) | Pipelines batch y tiempo real, `compute_health_summary × N`, arquitectura de datos |
