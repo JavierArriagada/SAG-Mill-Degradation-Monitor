@@ -15,6 +15,7 @@ Documentación técnica completa del sistema de monitoreo predictivo de flotas d
 | [analytics.md](analytics.md) | Motor analítico: Índice de Salud, RUL, detección de anomalías |
 | [cicd.md](cicd.md) | Pipeline CI/CD, GitHub Actions, estructura del workflow |
 | [deployment.md](deployment.md) | DigitalOcean App Platform: configuración, secrets, operación |
+| [troubleshooting/index.md](troubleshooting/index.md) | Issues conocidos y sus soluciones (TS-01 … TS-08) |
 
 ---
 
