@@ -6,7 +6,7 @@ Monitorea continuamente el estado de Molinos SAG y de Bolas, calcula un Índice 
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![Dash](https://img.shields.io/badge/Dash-2.18-00BFB3?logo=plotly&logoColor=white)
-![CI](https://github.com/tu-usuario/sag-monitor/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/JavierArriagada/sag-monitor/actions/workflows/ci.yml/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ---
