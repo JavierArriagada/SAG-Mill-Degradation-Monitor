@@ -222,6 +222,6 @@ def register(app) -> None:
                               annotation_text="Crítico (20%)", annotation_font_color="#da3633", annotation_font_size=9)
         fig_health.add_hline(y=60, line_dash="dot", line_color="#e8a020", line_width=1,
                               annotation_text="Alerta (60%)", annotation_font_color="#e8a020", annotation_font_size=9)
-        fig_health.update_layout(**_base_layout(), height=180, yaxis=dict(range=[0, 105], gridcolor=GRID_CLR))
+        fig_health.update_layout(**{**_base_layout(), "height": 180, "yaxis": dict(range=[0, 105], gridcolor=GRID_CLR)})
 
         return gauge, kpi_strip, degrad_badge, rul_display, fig_vib, fig_temp, fig_pres, fig_pwr, fig_health

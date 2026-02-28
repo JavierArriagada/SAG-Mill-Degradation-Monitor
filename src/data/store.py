@@ -27,7 +27,7 @@ import pandas as pd
 from config.settings import settings
 from src.data.models import Alert, SensorReading
 
-_lock = threading.Lock()
+_lock = threading.RLock()
 _DB: Optional[sqlite3.Connection] = None
 
 
