@@ -1,0 +1,98 @@
+{
+  "app_title": "Monitor de Degradación SAG",
+  "nav": {
+    "overview": "Resumen",
+    "equipment": "Equipos",
+    "alerts": "Alertas",
+    "trends": "Tendencias"
+  },
+  "sidebar": {
+    "select_equipment": "Seleccionar Equipo",
+    "sag_mill": "Molino SAG",
+    "ball_mill": "Molino de Bolas"
+  },
+  "overview": {
+    "title": "Resumen Ejecutivo",
+    "subtitle": "Estado de la flota de molienda en tiempo real",
+    "fleet_health": "Salud de Flota",
+    "active_alerts": "Alertas Activas",
+    "critical_alerts": "Alertas Críticas",
+    "monitoring_since": "Monitoreando desde",
+    "equipment_status": "Estado de Equipos"
+  },
+  "equipment": {
+    "title": "Detalle de Equipo",
+    "vibration": "Vibración",
+    "temperature": "Temperatura Cojinete",
+    "pressure": "Presión Hidráulica",
+    "power": "Potencia",
+    "load": "Carga",
+    "liner_wear": "Desgaste Revestimiento",
+    "seal_condition": "Condición Sellos",
+    "throughput": "Throughput",
+    "degradation_mode": "Modo de Degradación",
+    "health_index": "Índice de Salud",
+    "rul": "Vida Útil Restante",
+    "rul_days": "días",
+    "rul_unknown": "Estable",
+    "zone_a": "Zona A – Normal",
+    "zone_b": "Zona B – Aceptable",
+    "zone_c": "Zona C – Alerta",
+    "zone_d": "Zona D – Crítico"
+  },
+  "alerts": {
+    "title": "Gestión de Alertas",
+    "filter_severity": "Filtrar por Severidad",
+    "filter_equipment": "Filtrar por Equipo",
+    "all": "Todos",
+    "acknowledge": "Reconocer",
+    "acknowledged": "Reconocida",
+    "timestamp": "Fecha/Hora",
+    "equipment": "Equipo",
+    "severity": "Severidad",
+    "variable": "Variable",
+    "value": "Valor",
+    "threshold": "Umbral",
+    "message": "Mensaje",
+    "no_alerts": "Sin alertas activas",
+    "severities": {
+      "info": "Info",
+      "warning": "Advertencia",
+      "alert": "Alerta",
+      "critical": "Crítico"
+    }
+  },
+  "trends": {
+    "title": "Tendencias Históricas",
+    "subtitle": "Análisis de los últimos 90 días",
+    "select_variable": "Seleccionar Variable",
+    "show_anomalies": "Mostrar Anomalías",
+    "show_thresholds": "Mostrar Umbrales",
+    "anomaly_detected": "Anomalía detectada",
+    "normal_range": "Rango Normal"
+  },
+  "degradation_modes": {
+    "normal": "Normal",
+    "bearing": "Rodamiento",
+    "liner": "Revestimiento",
+    "hydraulic": "Hidráulico",
+    "misalignment": "Desalineamiento"
+  },
+  "units": {
+    "vibration": "mm/s",
+    "temperature": "°C",
+    "pressure": "bar",
+    "power": "kW",
+    "load": "%",
+    "throughput": "t/h",
+    "wear": "%",
+    "days": "días"
+  },
+  "health": {
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "fair": "Regular",
+    "poor": "Deficiente",
+    "critical": "Crítico"
+  }
+}

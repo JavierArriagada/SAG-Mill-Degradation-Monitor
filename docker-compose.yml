@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8050:8050"
+    environment:
+      - DEBUG=false
+      - PORT=8050
+      - DATABASE_URL=sag_monitor.db
+      - SIMULATION_SEED=42
+      - HISTORY_DAYS=90
+      - DEFAULT_LANG=es
+    volumes:
+      # Persist the SQLite DB between restarts
+      - sag_data:/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8050/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  sag_data:

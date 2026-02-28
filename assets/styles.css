@@ -1,0 +1,187 @@
+/* ── SAG Monitor — Custom Styles ──────────────────────────────────────────── */
+
+:root {
+  --bg-root:   #0d1117;
+  --bg-card:   #161b22;
+  --border:    #30363d;
+  --text:      #c9d1d9;
+  --muted:     #8b949e;
+  --blue:      #58a6ff;
+  --green:     #2ea44f;
+  --orange:    #e8a020;
+  --red:       #da3633;
+  --accent:    #58a6ff;
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--bg-root) !important;
+  color: var(--text) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-root); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* ── Page header ───────────────────────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.page-title {
+  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  font-size: .82rem;
+  margin: 0;
+}
+
+/* ── Chart card ────────────────────────────────────────────────────────────── */
+.chart-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  height: 100%;
+}
+
+.chart-title {
+  font-size: .78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* ── Navbar active link ────────────────────────────────────────────────────── */
+.navbar .nav-link.active {
+  color: var(--blue) !important;
+  font-weight: 600;
+}
+
+.navbar .nav-link {
+  color: var(--muted) !important;
+  font-size: .88rem;
+  padding: 6px 12px !important;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--text) !important;
+}
+
+/* ── Dark dropdown ─────────────────────────────────────────────────────────── */
+.dark-dropdown .Select-control,
+.dark-dropdown .VirtualizedSelectFocusedOption {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+/* Dash Dropdown */
+.Select-control {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+}
+
+.Select-menu-outer {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.Select-option {
+  background-color: var(--bg-card) !important;
+  color: var(--text) !important;
+}
+
+.Select-option:hover,
+.Select-option.is-focused {
+  background-color: rgba(88, 166, 255, 0.1) !important;
+}
+
+.Select-value-label {
+  color: var(--text) !important;
+}
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+table {
+  color: var(--text);
+}
+
+tr:hover td {
+  background-color: rgba(88, 166, 255, 0.04);
+}
+
+th {
+  color: var(--muted) !important;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+td {
+  padding: 7px 10px;
+  vertical-align: middle;
+}
+
+/* ── Health status indicator ───────────────────────────────────────────────── */
+.health-bar {
+  height: 6px;
+  border-radius: 3px;
+  display: inline-block;
+  transition: width 0.4s ease;
+}
+
+/* ── Plotly chart background fix ───────────────────────────────────────────── */
+.js-plotly-plot .plotly .modebar {
+  background: transparent !important;
+}
+
+.js-plotly-plot .plotly .modebar-btn path {
+  fill: var(--muted) !important;
+}
+
+/* ── Bootstrap overrides ───────────────────────────────────────────────────── */
+.navbar-dark { background-color: var(--bg-root) !important; }
+.navbar-toggler { border-color: var(--border) !important; }
+
+.form-check-input:checked {
+  background-color: var(--blue);
+  border-color: var(--blue);
+}
+
+.form-check-label { color: var(--text) !important; }
+
+/* Dropdown fix for DBC */
+.dropdown-menu {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.dropdown-item {
+  color: var(--text) !important;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  background-color: rgba(88, 166, 255, 0.1) !important;
+}
+
+/* ── Responsive tweaks ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .page-title { font-size: 1.1rem; }
+  .chart-card { padding: 10px; }
+}

@@ -1,0 +1,45 @@
+[project]
+name = "sag-monitor"
+version = "0.1.0"
+description = "SAG Mill Degradation Monitor — Real-time predictive maintenance dashboard"
+requires-python = ">=3.12"
+readme = "README.md"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+ignore = [
+  "E501",   # line length handled by formatter
+  "B008",   # function calls in defaults (Dash uses this pattern)
+  "B006",   # mutable default args (acceptable in Dash callbacks)
+]
+exclude = ["tests/", ".venv/", "__pycache__/"]
+
+[tool.ruff.lint.per-file-ignores]
+"app.py" = ["E402"]          # module-level imports after code (Dash pattern)
+"src/callbacks/*.py" = ["B023"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = false
+ignore_missing_imports = true
+exclude = ["tests/", ".venv/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+filterwarnings = [
+  "ignore::DeprecationWarning",
+  "ignore::UserWarning",
+]
+
+[tool.coverage.run]
+source = ["src", "config"]
+omit = ["tests/*", ".venv/*"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false

@@ -1,0 +1,98 @@
+{
+  "app_title": "SAG Degradation Monitor",
+  "nav": {
+    "overview": "Overview",
+    "equipment": "Equipment",
+    "alerts": "Alerts",
+    "trends": "Trends"
+  },
+  "sidebar": {
+    "select_equipment": "Select Equipment",
+    "sag_mill": "SAG Mill",
+    "ball_mill": "Ball Mill"
+  },
+  "overview": {
+    "title": "Executive Overview",
+    "subtitle": "Real-time grinding fleet status",
+    "fleet_health": "Fleet Health",
+    "active_alerts": "Active Alerts",
+    "critical_alerts": "Critical Alerts",
+    "monitoring_since": "Monitoring since",
+    "equipment_status": "Equipment Status"
+  },
+  "equipment": {
+    "title": "Equipment Detail",
+    "vibration": "Vibration",
+    "temperature": "Bearing Temperature",
+    "pressure": "Hydraulic Pressure",
+    "power": "Power",
+    "load": "Load",
+    "liner_wear": "Liner Wear",
+    "seal_condition": "Seal Condition",
+    "throughput": "Throughput",
+    "degradation_mode": "Degradation Mode",
+    "health_index": "Health Index",
+    "rul": "Remaining Useful Life",
+    "rul_days": "days",
+    "rul_unknown": "Stable",
+    "zone_a": "Zone A – Normal",
+    "zone_b": "Zone B – Acceptable",
+    "zone_c": "Zone C – Alert",
+    "zone_d": "Zone D – Critical"
+  },
+  "alerts": {
+    "title": "Alert Management",
+    "filter_severity": "Filter by Severity",
+    "filter_equipment": "Filter by Equipment",
+    "all": "All",
+    "acknowledge": "Acknowledge",
+    "acknowledged": "Acknowledged",
+    "timestamp": "Timestamp",
+    "equipment": "Equipment",
+    "severity": "Severity",
+    "variable": "Variable",
+    "value": "Value",
+    "threshold": "Threshold",
+    "message": "Message",
+    "no_alerts": "No active alerts",
+    "severities": {
+      "info": "Info",
+      "warning": "Warning",
+      "alert": "Alert",
+      "critical": "Critical"
+    }
+  },
+  "trends": {
+    "title": "Historical Trends",
+    "subtitle": "Analysis of the last 90 days",
+    "select_variable": "Select Variable",
+    "show_anomalies": "Show Anomalies",
+    "show_thresholds": "Show Thresholds",
+    "anomaly_detected": "Anomaly detected",
+    "normal_range": "Normal Range"
+  },
+  "degradation_modes": {
+    "normal": "Normal",
+    "bearing": "Bearing",
+    "liner": "Liner",
+    "hydraulic": "Hydraulic",
+    "misalignment": "Misalignment"
+  },
+  "units": {
+    "vibration": "mm/s",
+    "temperature": "°C",
+    "pressure": "bar",
+    "power": "kW",
+    "load": "%",
+    "throughput": "t/h",
+    "wear": "%",
+    "days": "days"
+  },
+  "health": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "fair": "Fair",
+    "poor": "Poor",
+    "critical": "Critical"
+  }
+}
