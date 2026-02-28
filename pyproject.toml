@@ -31,6 +31,7 @@ exclude = ["tests/", ".venv/"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-v --tb=short"
+cache_dir = ".pytest_cache"
 filterwarnings = [
   "ignore::DeprecationWarning",
   "ignore::UserWarning",

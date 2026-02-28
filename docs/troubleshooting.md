@@ -13,4 +13,5 @@
 | [TS-05](troubleshooting/05-pantalla-en-blanco.md) | La app arranca pero muestra pantalla en blanco |
 | [TS-06](troubleshooting/06-ci-github-actions.md) | CI falla en GitHub Actions |
 | [TS-07](troubleshooting/07-compute-rul-floating-point.md) | `compute_rul` retorna valor astronómico en serie estable |
-| [TS-08](troubleshooting/08-ruff-linting-errors.md) | 97 errores de linting ruff en `make check` |
+| [TS-08](troubleshooting/08-ruff-linting-errors.md) | 97 errores de linting ruff en `make check` | Calidad de código |
+| [TS-09](troubleshooting/09-testwatch-comportamiento.md) | `make test-watch` se "cuelga" luego de correr los tests | Tests / Dev workflow |

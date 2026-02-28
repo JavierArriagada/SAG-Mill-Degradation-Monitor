@@ -105,7 +105,7 @@ test-cov: install-dev  ## Run tests with coverage report
 
 .PHONY: test-watch
 test-watch: install-dev  ## Run tests in watch mode (requires pytest-watch)
-	$(VENV)/bin/ptw --config /dev/null -- --tb=short
+	$(VENV)/bin/ptw --config setup.cfg . -- --tb=short
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 
