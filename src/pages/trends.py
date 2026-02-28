@@ -4,7 +4,7 @@ src/pages/trends.py
 Historical trend analysis page with anomaly detection overlay.
 """
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import dcc, html
 
 CARD_BG = "#161b22"
 BORDER = "#30363d"

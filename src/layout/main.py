@@ -9,8 +9,7 @@ Contains:
   - dcc.Interval for live updates
   - Navbar + page content container
 """
-from dash import html, dcc
-import dash_bootstrap_components as dbc
+from dash import dcc, html
 
 from src.layout.navbar import create_navbar
 

@@ -5,7 +5,7 @@ Pydantic v2 data models for sensor readings, alerts, and health summaries.
 """
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -25,8 +25,8 @@ class SensorReading(BaseModel):
     hydraulic_pressure_bar: float = Field(ge=0.0, le=300.0)
     power_kw: float = Field(ge=0.0, le=25_000.0)
     load_pct: float = Field(ge=0.0, le=100.0)
-    liner_wear_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
-    seal_condition_pct: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    liner_wear_pct: float | None = Field(default=None, ge=0.0, le=100.0)
+    seal_condition_pct: float | None = Field(default=None, ge=0.0, le=100.0)
     throughput_tph: float = Field(ge=0.0, le=6_000.0)
     degradation_mode: DegradationMode = DegradationMode.NORMAL
     health_index: float = Field(default=100.0, ge=0.0, le=100.0)
@@ -53,6 +53,6 @@ class HealthSummary(BaseModel):
     thermal_score: float = Field(ge=0.0, le=100.0)
     pressure_score: float = Field(ge=0.0, le=100.0)
     power_score: float = Field(ge=0.0, le=100.0)
-    predicted_rul_days: Optional[float] = None
+    predicted_rul_days: float | None = None
     active_alerts: int = 0
     degradation_mode: DegradationMode = DegradationMode.NORMAL

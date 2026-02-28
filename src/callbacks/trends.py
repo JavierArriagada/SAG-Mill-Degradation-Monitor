@@ -5,10 +5,9 @@ Historical trends page callbacks.
 """
 from __future__ import annotations
 
+import pandas as pd
 import plotly.graph_objects as go
 from dash import Input, Output, html
-import pandas as pd
-import numpy as np
 
 from config.equipment import EQUIPMENT_CONFIG
 from src.analytics.anomaly import detect_anomalies, get_anomaly_periods
@@ -32,18 +31,18 @@ _VARIABLE_LABELS = {
 
 
 def _layout(height: int = 300) -> dict:
-    return dict(
-        template=PLOTLY_TMPL,
-        paper_bgcolor=CARD_BG,
-        plot_bgcolor=CARD_BG,
-        margin=dict(l=10, r=10, t=10, b=10),
-        font=dict(color="#c9d1d9", size=11),
-        xaxis=dict(gridcolor=GRID_CLR),
-        yaxis=dict(gridcolor=GRID_CLR),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=10)),
-        height=height,
-        showlegend=True,
-    )
+    return {
+        "template": PLOTLY_TMPL,
+        "paper_bgcolor": CARD_BG,
+        "plot_bgcolor": CARD_BG,
+        "margin": {"l": 10, "r": 10, "t": 10, "b": 10},
+        "font": {"color": "#c9d1d9", "size": 11},
+        "xaxis": {"gridcolor": GRID_CLR},
+        "yaxis": {"gridcolor": GRID_CLR},
+        "legend": {"bgcolor": "rgba(0,0,0,0)", "font": {"size": 10}},
+        "height": height,
+        "showlegend": True,
+    }
 
 
 def register(app) -> None:
@@ -69,7 +68,7 @@ def register(app) -> None:
 
         eq = EQUIPMENT_CONFIG.get(equipment_id, EQUIPMENT_CONFIG["SAG-01"])
         color = eq["color"]
-        color_rgba = eq["color_rgba"]
+        eq["color_rgba"]
         var_label = _VARIABLE_LABELS.get(variable, variable)
         chart_title = f"{eq['name']} — {var_label}"
 
@@ -86,7 +85,7 @@ def register(app) -> None:
             x=df["timestamp"],
             y=df[variable],
             mode="lines",
-            line=dict(color=color, width=1.3),
+            line={"color": color, "width": 1.3},
             name=var_label,
             hovertemplate="%{x|%d/%m %H:%M}<br>%{y:.3f}<extra></extra>",
         )
@@ -98,7 +97,7 @@ def register(app) -> None:
                 x=df["timestamp"],
                 y=roll_mean,
                 mode="lines",
-                line=dict(color="#c9d1d9", width=1, dash="dash"),
+                line={"color": "#c9d1d9", "width": 1, "dash": "dash"},
                 name="Media 24h",
                 opacity=0.7,
             )
@@ -129,7 +128,7 @@ def register(app) -> None:
                     x=anomaly_df["timestamp"],
                     y=anomaly_df[variable],
                     mode="markers",
-                    marker=dict(color="#da3633", size=6, symbol="x"),
+                    marker={"color": "#da3633", "size": 6, "symbol": "x"},
                     name="Anomalía",
                 )
             anomaly_periods = get_anomaly_periods(df, variable)
@@ -145,7 +144,7 @@ def register(app) -> None:
             x=z_df["timestamp"],
             y=z_df["zscore"],
             mode="lines",
-            line=dict(color="#58a6ff", width=1.2),
+            line={"color": "#58a6ff", "width": 1.2},
             name="Z-score",
             hovertemplate="%{x|%d/%m %H:%M}<br>z=%{y:.2f}<extra></extra>",
         )
@@ -165,7 +164,7 @@ def register(app) -> None:
                 x=anomaly_scatter_x,
                 y=anomaly_scatter_y,
                 mode="markers",
-                marker=dict(color="#da3633", size=5, symbol="circle"),
+                marker={"color": "#da3633", "size": 5, "symbol": "circle"},
                 name="Anomalía",
             )
 

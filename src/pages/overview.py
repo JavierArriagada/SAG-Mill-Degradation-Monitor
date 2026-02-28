@@ -6,10 +6,7 @@ Executive overview page.
 Static structure; dynamic KPI data injected via callbacks.
 """
 import dash_bootstrap_components as dbc
-from dash import html, dcc
-
-from src.layout.components.health_gauge import health_gauge
-from src.layout.components.kpi_card import kpi_card
+from dash import html
 
 CARD_BG = "#161b22"
 BORDER = "#30363d"

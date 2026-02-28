@@ -15,12 +15,9 @@ Thread safety: uses check_same_thread=False + a module-level lock.
 """
 from __future__ import annotations
 
-import json
 import sqlite3
 import threading
-from datetime import datetime, timedelta, timezone
-from pathlib import Path
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 import pandas as pd
 
@@ -28,7 +25,7 @@ from config.settings import settings
 from src.data.models import Alert, SensorReading
 
 _lock = threading.RLock()
-_DB: Optional[sqlite3.Connection] = None
+_DB: sqlite3.Connection | None = None
 
 
 # ── Connection ────────────────────────────────────────────────────────────────
@@ -189,7 +186,7 @@ def get_readings(
     limit: int = 10_000,
 ) -> pd.DataFrame:
     """Fetch readings for an equipment over the last `hours` hours."""
-    since = (datetime.now(tz=timezone.utc) - timedelta(hours=hours)).isoformat()
+    since = (datetime.now(tz=UTC) - timedelta(hours=hours)).isoformat()
     conn = _get_conn()
     with _lock:
         df = pd.read_sql_query(
@@ -205,7 +202,7 @@ def get_readings(
     return df
 
 
-def get_latest(equipment_id: str) -> Optional[dict]:
+def get_latest(equipment_id: str) -> dict | None:
     """Return the most recent row for an equipment as a dict."""
     conn = _get_conn()
     with _lock:
@@ -217,13 +214,13 @@ def get_latest(equipment_id: str) -> Optional[dict]:
 
 
 def get_alerts(
-    equipment_id: Optional[str] = None,
-    severity: Optional[str] = None,
+    equipment_id: str | None = None,
+    severity: str | None = None,
     days: int = 30,
     limit: int = 500,
 ) -> pd.DataFrame:
     """Fetch alerts with optional filters."""
-    since = (datetime.now(tz=timezone.utc) - timedelta(days=days)).isoformat()
+    since = (datetime.now(tz=UTC) - timedelta(days=days)).isoformat()
     where = ["timestamp >= ?"]
     params: list = [since]
 
@@ -252,7 +249,7 @@ def acknowledge_alert(alert_id: str) -> None:
         conn.execute("UPDATE alerts SET acknowledged = 1 WHERE id = ?", (alert_id,))
 
 
-def get_active_alert_count(equipment_id: Optional[str] = None) -> int:
+def get_active_alert_count(equipment_id: str | None = None) -> int:
     """Count unacknowledged alerts."""
     conn = _get_conn()
     where = "acknowledged = 0"

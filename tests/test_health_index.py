@@ -3,22 +3,20 @@ tests/test_health_index.py
 ───────────────────────────
 Tests for the composite health index calculator.
 """
-import pytest
-import pandas as pd
 import numpy as np
-from datetime import timezone
+import pandas as pd
 
+from config.equipment import BALL_THRESHOLDS, SAG_THRESHOLDS
 from src.analytics.health_index import (
+    _power_score,
+    _pressure_score,
+    _thermal_score,
+    _vibration_score,
+    compute_fleet_health,
     compute_health_summary,
     compute_rul,
-    compute_fleet_health,
-    _vibration_score,
-    _thermal_score,
-    _pressure_score,
-    _power_score,
 )
-from config.equipment import SAG_THRESHOLDS, BALL_THRESHOLDS
-from src.data.models import HealthSummary, DegradationMode
+from src.data.models import HealthSummary
 
 
 class TestVibrationScore:

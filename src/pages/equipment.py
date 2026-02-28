@@ -6,7 +6,7 @@ Equipment detail page.
 Layout: sidebar selector + detail panel with dynamic charts.
 """
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import dcc, html
 
 from src.layout.sidebar import create_sidebar
 

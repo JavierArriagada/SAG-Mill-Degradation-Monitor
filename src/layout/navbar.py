@@ -4,7 +4,7 @@ src/layout/navbar.py
 Navigation bar with page links and language toggle.
 """
 import dash_bootstrap_components as dbc
-from dash import html, dcc
+from dash import html
 
 NAV_BG = "#0d1117"
 BORDER = "#30363d"

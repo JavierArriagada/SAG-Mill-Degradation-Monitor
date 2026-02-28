@@ -3,20 +3,18 @@ src/callbacks/navigation.py — Overview page dynamic content callback.
 """
 from __future__ import annotations
 
-import plotly.graph_objects as go
+from datetime import UTC, datetime
+
 import dash_bootstrap_components as dbc
 from dash import Input, Output, html
 
 from config.alerts import SEVERITY_COLORS, SEVERITY_LABELS_ES
 from config.equipment import EQUIPMENT_CONFIG
 from src.analytics.health_index import compute_health_summary
-from src.analytics.thresholds import get_static_thresholds, get_value_color
 from src.data import store
-from src.data.models import SensorReading, DegradationMode
+from src.data.models import DegradationMode, SensorReading
 from src.layout.components.health_gauge import health_gauge
 from src.layout.components.kpi_card import kpi_card
-
-from datetime import datetime, timezone
 
 CARD_BG = "#161b22"
 BORDER = "#30363d"
@@ -25,7 +23,7 @@ MUTED = "#8b949e"
 
 def _latest_to_reading(latest: dict, equipment_id: str) -> SensorReading:
     return SensorReading(
-        timestamp=datetime.now(tz=timezone.utc),
+        timestamp=datetime.now(tz=UTC),
         equipment_id=equipment_id,
         vibration_mms=float(latest["vibration_mms"]),
         bearing_temp_c=float(latest["bearing_temp_c"]),
@@ -44,7 +42,7 @@ def register(app) -> None:
     """Register navigation + overview page callbacks."""
 
     # ── Page routing ──────────────────────────────────────────────────────────
-    from src.pages import overview, equipment, alerts, trends
+    from src.pages import alerts, equipment, overview, trends
 
     @app.callback(
         Output("page-content", "children"),

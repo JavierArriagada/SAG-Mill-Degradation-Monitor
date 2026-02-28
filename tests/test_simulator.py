@@ -3,18 +3,15 @@ tests/test_simulator.py
 ────────────────────────
 Tests for the synthetic data simulator.
 """
-import pytest
-from datetime import timezone
 
+from src.data.models import DegradationMode
 from src.data.simulator import (
+    _degradation_progress,
+    derive_alerts,
     generate_history,
     generate_realtime_reading,
-    derive_alerts,
     to_dataframe,
-    _plan_events,
-    _degradation_progress,
 )
-from src.data.models import DegradationMode
 
 
 class TestGenerateHistory:
@@ -59,7 +56,7 @@ class TestGenerateHistory:
     def test_reproducibility(self):
         h1 = generate_history(seed=99, days=2)
         h2 = generate_history(seed=99, days=2)
-        for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"]):
+        for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"], strict=False):
             assert r1.vibration_mms == r2.vibration_mms
             assert r1.bearing_temp_c == r2.bearing_temp_c
 
@@ -67,7 +64,7 @@ class TestGenerateHistory:
         h1 = generate_history(seed=1, days=2)
         h2 = generate_history(seed=2, days=2)
         # At least some readings should differ
-        diffs = [r1.vibration_mms != r2.vibration_mms for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"])]
+        diffs = [r1.vibration_mms != r2.vibration_mms for r1, r2 in zip(h1["SAG-01"], h2["SAG-01"], strict=False)]
         assert any(diffs)
 
     def test_contains_degradation_events(self):
@@ -137,7 +134,6 @@ class TestToDataframe:
 
 class TestDegradationProgress:
     def test_none_outside_event(self):
-        import numpy as np
         from src.data.simulator import DegradationEvent
         event = DegradationEvent(mode="bearing", start_hour=100, duration_hours=48, severity=0.8)
         assert _degradation_progress(50, event) is None

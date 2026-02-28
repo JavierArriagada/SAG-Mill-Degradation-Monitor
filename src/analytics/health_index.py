@@ -16,15 +16,11 @@ RUL (Remaining Useful Life) estimation:
 """
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 
-from config.equipment import EQUIPMENT_CONFIG, SAG_THRESHOLDS, BALL_THRESHOLDS, EquipmentThresholds
-from src.data.models import DegradationMode, HealthSummary, SensorReading
-
+from config.equipment import BALL_THRESHOLDS, SAG_THRESHOLDS, EquipmentThresholds
+from src.data.models import HealthSummary, SensorReading
 
 # ── Sub-index helpers ─────────────────────────────────────────────────────────
 
@@ -153,7 +149,7 @@ def compute_health_summary(reading: SensorReading) -> HealthSummary:
     )
 
 
-def compute_rul(health_series: pd.Series, window_hours: int = 48) -> Optional[float]:
+def compute_rul(health_series: pd.Series, window_hours: int = 48) -> float | None:
     """
     Estimate Remaining Useful Life (days) using linear extrapolation.
 
@@ -173,8 +169,12 @@ def compute_rul(health_series: pd.Series, window_hours: int = 48) -> Optional[fl
     coeffs = np.polyfit(x, y, 1)
     slope = coeffs[0]  # HI change per hour
 
-    if slope >= 0:
-        # Stable or improving
+    # Use a small epsilon to guard against floating-point noise on flat series.
+    # np.polyfit on perfectly identical values returns a slope that is not
+    # exactly 0.0 (e.g. ~-7e-13), which would bypass the >= 0 guard and
+    # produce an astronomically large (and meaningless) RUL estimate.
+    if slope >= -1e-6:
+        # Stable or improving — no meaningful RUL projection
         return None
 
     current_hi = float(recent.iloc[-1])

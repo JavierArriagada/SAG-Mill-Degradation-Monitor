@@ -6,8 +6,8 @@ Alert management page callbacks.
 from __future__ import annotations
 
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html, ctx, ALL
 import pandas as pd
+from dash import ALL, Input, Output, State, ctx, html
 
 from config.alerts import SEVERITY_COLORS, SEVERITY_LABELS_ES
 from src.data import store

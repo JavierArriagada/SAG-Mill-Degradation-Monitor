@@ -18,24 +18,21 @@ from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
-from typing import Optional
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 import pandas as pd
 
 from config.alerts import AlertSeverity
-from config.equipment import EQUIPMENT_CONFIG, SAG_THRESHOLDS, BALL_THRESHOLDS
+from config.equipment import BALL_THRESHOLDS, EQUIPMENT_CONFIG, SAG_THRESHOLDS
 from config.settings import settings
 from src.data.degradation import (
     bearing_degradation,
-    liner_degradation,
     hydraulic_degradation,
+    liner_degradation,
     misalignment_degradation,
-    classify_stage,
 )
-from src.data.models import DegradationMode, SensorReading, Alert
-
+from src.data.models import Alert, DegradationMode, SensorReading
 
 # ── Baseline operating points ─────────────────────────────────────────────────
 
@@ -112,7 +109,7 @@ def _plan_events(equipment_id: str, total_hours: int, rng: np.random.Generator) 
     return events
 
 
-def _degradation_progress(hour: int, event: DegradationEvent) -> Optional[float]:
+def _degradation_progress(hour: int, event: DegradationEvent) -> float | None:
     """
     Returns normalized progress t ∈ [0, 1] if the hour falls within the event,
     else None.
@@ -223,7 +220,7 @@ def generate_history(seed: int = settings.SIMULATION_SEED, days: int = settings.
     """
     rng = np.random.default_rng(seed)
     total_hours = days * 24
-    end_ts = datetime.now(tz=timezone.utc).replace(minute=0, second=0, microsecond=0)
+    end_ts = datetime.now(tz=UTC).replace(minute=0, second=0, microsecond=0)
     start_ts = end_ts - timedelta(hours=total_hours - 1)
 
     timestamps = [start_ts + timedelta(hours=h) for h in range(total_hours)]
@@ -242,9 +239,9 @@ def generate_realtime_reading(equipment_id: str) -> SensorReading:
     Generate a single fresh reading that simulates a real-time sensor update.
     Uses a random seed based on current time for slight variation.
     """
-    seed = int(datetime.now(tz=timezone.utc).timestamp()) % 10_000
+    seed = int(datetime.now(tz=UTC).timestamp()) % 10_000
     rng = np.random.default_rng(seed)
-    ts = datetime.now(tz=timezone.utc).replace(second=0, microsecond=0)
+    ts = datetime.now(tz=UTC).replace(second=0, microsecond=0)
 
     if equipment_id == "SAG-01":
         return _generate_sag_reading(0, ts, [], rng)

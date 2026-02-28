@@ -12,7 +12,6 @@ ISO 10816 vibration severity zones (mm/s RMS):
 ISO 13381: Condition monitoring prognostics framework.
 """
 from dataclasses import dataclass
-from typing import Dict
 
 
 @dataclass(frozen=True)
@@ -27,10 +26,10 @@ class VibrationZones:
 @dataclass(frozen=True)
 class EquipmentThresholds:
     vibration: VibrationZones
-    bearing_temp_c: Dict[str, float]        # warning / alert / critical
-    hydraulic_pressure_bar: Dict[str, float]  # min / max / critical_high
-    power_kw: Dict[str, float]               # min / nominal / max
-    load_pct: Dict[str, float]               # min / opt_low / opt_high / max
+    bearing_temp_c: dict[str, float]        # warning / alert / critical
+    hydraulic_pressure_bar: dict[str, float]  # min / max / critical_high
+    power_kw: dict[str, float]               # min / nominal / max
+    load_pct: dict[str, float]               # min / opt_low / opt_high / max
 
 
 # ── SAG Mill thresholds ───────────────────────────────────────────────────────
@@ -52,7 +51,7 @@ BALL_THRESHOLDS = EquipmentThresholds(
 )
 
 # ── Equipment registry ────────────────────────────────────────────────────────
-EQUIPMENT_CONFIG: Dict[str, dict] = {
+EQUIPMENT_CONFIG: dict[str, dict] = {
     "SAG-01": {
         "id": "SAG-01",
         "name": "Molino SAG",

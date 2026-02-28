@@ -11,21 +11,19 @@ Provides:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
-import numpy as np
 import pandas as pd
 
-from config.equipment import EQUIPMENT_CONFIG, SAG_THRESHOLDS, BALL_THRESHOLDS, EquipmentThresholds
+from config.equipment import BALL_THRESHOLDS, SAG_THRESHOLDS, EquipmentThresholds
 
 
 @dataclass(frozen=True)
 class ThresholdBand:
     variable: str
-    warning: Optional[float]
-    alert: Optional[float]
-    critical: Optional[float]
-    lower_bound: Optional[float] = None   # e.g., minimum pressure
+    warning: float | None
+    alert: float | None
+    critical: float | None
+    lower_bound: float | None = None   # e.g., minimum pressure
 
 
 def get_static_thresholds(equipment_id: str, variable: str) -> ThresholdBand:

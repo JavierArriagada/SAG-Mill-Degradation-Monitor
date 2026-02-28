@@ -4,9 +4,10 @@ tests/conftest.py
 Shared pytest fixtures for SAG Monitor test suite.
 """
 import os
-import pytest
+from datetime import UTC, datetime
+
 import numpy as np
-from datetime import datetime, timezone
+import pytest
 
 # Use in-memory SQLite for tests
 os.environ.setdefault("DATABASE_URL", ":memory:")
@@ -21,12 +22,12 @@ def rng() -> np.random.Generator:
 
 @pytest.fixture
 def now() -> datetime:
-    return datetime(2024, 6, 1, 12, 0, 0, tzinfo=timezone.utc)
+    return datetime(2024, 6, 1, 12, 0, 0, tzinfo=UTC)
 
 
 @pytest.fixture
 def sample_sag_reading(now):
-    from src.data.models import SensorReading, DegradationMode
+    from src.data.models import DegradationMode, SensorReading
     return SensorReading(
         timestamp=now,
         equipment_id="SAG-01",
@@ -45,7 +46,7 @@ def sample_sag_reading(now):
 
 @pytest.fixture
 def sample_ball_reading(now):
-    from src.data.models import SensorReading, DegradationMode
+    from src.data.models import DegradationMode, SensorReading
     return SensorReading(
         timestamp=now,
         equipment_id="BALL-01",
@@ -63,7 +64,7 @@ def sample_ball_reading(now):
 @pytest.fixture
 def degraded_sag_reading(now):
     """A SAG mill reading in bearing degradation (severe)."""
-    from src.data.models import SensorReading, DegradationMode
+    from src.data.models import DegradationMode, SensorReading
     return SensorReading(
         timestamp=now,
         equipment_id="SAG-01",

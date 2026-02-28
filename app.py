@@ -34,7 +34,7 @@ server = app.server  # gunicorn / Render entry point
 app.layout = create_layout()
 
 # ── 3. Register callbacks ─────────────────────────────────────────────────────
-from src.callbacks import navigation, equipment, alerts, trends
+from src.callbacks import alerts, equipment, navigation, trends
 
 navigation.register(app)
 equipment.register(app)

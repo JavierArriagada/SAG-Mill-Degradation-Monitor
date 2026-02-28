@@ -71,9 +71,9 @@ def health_gauge(
     fig.update_layout(
         paper_bgcolor=CARD_BG,
         plot_bgcolor=CARD_BG,
-        margin=dict(l=20, r=20, t=40, b=20),
+        margin={"l": 20, "r": 20, "t": 40, "b": 20},
         height=height,
-        font=dict(color="#c9d1d9"),
+        font={"color": "#c9d1d9"},
     )
 
     return dcc.Graph(

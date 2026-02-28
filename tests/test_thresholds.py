@@ -3,16 +3,15 @@ tests/test_thresholds.py
 ─────────────────────────
 Tests for the threshold engine.
 """
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from src.analytics.thresholds import (
-    get_static_thresholds,
+    ThresholdBand,
     compute_dynamic_thresholds,
     evaluate_current_value,
+    get_static_thresholds,
     get_value_color,
-    ThresholdBand,
 )
 
 

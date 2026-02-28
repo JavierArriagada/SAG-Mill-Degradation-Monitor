@@ -4,6 +4,7 @@ src/layout/components/alert_badge.py
 Alert severity badge component.
 """
 from dash import html
+
 from config.alerts import SEVERITY_COLORS, SEVERITY_LABELS_ES
 
 

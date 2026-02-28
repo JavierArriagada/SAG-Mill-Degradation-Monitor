@@ -6,17 +6,18 @@ Updates charts and KPIs based on selected equipment and live interval.
 """
 from __future__ import annotations
 
-import plotly.graph_objects as go
+from datetime import UTC
+
 import dash_bootstrap_components as dbc
-from dash import Input, Output, State, html, dcc
+import plotly.graph_objects as go
+from dash import Input, Output, html
 
 from config.equipment import EQUIPMENT_CONFIG
-from config.alerts import SEVERITY_COLORS
 from src.analytics.health_index import compute_health_summary, compute_rul
 from src.analytics.thresholds import get_static_thresholds, get_value_color
 from src.data import store
 from src.layout.components.health_gauge import health_gauge
-from src.layout.components.kpi_card import kpi_card, mini_kpi
+from src.layout.components.kpi_card import mini_kpi
 
 CARD_BG = "#161b22"
 GRID_CLR = "#30363d"
@@ -40,18 +41,18 @@ _DEGRAD_LABELS = {
 
 
 def _base_layout(title: str = "") -> dict:
-    return dict(
-        template=PLOTLY_TMPL,
-        paper_bgcolor=CARD_BG,
-        plot_bgcolor=CARD_BG,
-        margin=dict(l=10, r=10, t=30, b=10),
-        font=dict(color="#c9d1d9", size=11),
-        title=dict(text=title, font=dict(size=12, color=MUTED)),
-        xaxis=dict(gridcolor=GRID_CLR, showgrid=True),
-        yaxis=dict(gridcolor=GRID_CLR, showgrid=True),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=10)),
-        height=220,
-    )
+    return {
+        "template": PLOTLY_TMPL,
+        "paper_bgcolor": CARD_BG,
+        "plot_bgcolor": CARD_BG,
+        "margin": {"l": 10, "r": 10, "t": 30, "b": 10},
+        "font": {"color": "#c9d1d9", "size": 11},
+        "title": {"text": title, "font": {"size": 12, "color": MUTED}},
+        "xaxis": {"gridcolor": GRID_CLR, "showgrid": True},
+        "yaxis": {"gridcolor": GRID_CLR, "showgrid": True},
+        "legend": {"bgcolor": "rgba(0,0,0,0)", "font": {"size": 10}},
+        "height": 220,
+    }
 
 
 def _trend_fig(df, col: str, equipment_id: str, last_hours: int = 72) -> go.Figure:
@@ -63,7 +64,7 @@ def _trend_fig(df, col: str, equipment_id: str, last_hours: int = 72) -> go.Figu
     fig = go.Figure()
     fig.add_scatter(
         x=df_recent["timestamp"], y=df_recent[col],
-        line=dict(color=color, width=1.5),
+        line={"color": color, "width": 1.5},
         name=col,
         mode="lines",
         hovertemplate="%{x|%d/%m %H:%M}<br>%{y:.2f}<extra></extra>",
@@ -126,11 +127,12 @@ def register(app) -> None:
         eq = EQUIPMENT_CONFIG[equipment_id]
 
         # Build a SensorReading from the latest row for health computation
-        from src.data.models import SensorReading, DegradationMode
-        from datetime import datetime, timezone
+        from datetime import datetime
+
+        from src.data.models import DegradationMode, SensorReading
 
         reading = SensorReading(
-            timestamp=datetime.now(tz=timezone.utc),
+            timestamp=datetime.now(tz=UTC),
             equipment_id=equipment_id,
             vibration_mms=float(latest["vibration_mms"]),
             bearing_temp_c=float(latest["bearing_temp_c"]),
@@ -212,7 +214,7 @@ def register(app) -> None:
         fig_health = go.Figure()
         fig_health.add_scatter(
             x=df_full["timestamp"], y=df_full["health_index"],
-            line=dict(color=eq["color"], width=1.8),
+            line={"color": eq["color"], "width": 1.8},
             fill="tozeroy",
             fillcolor=eq["color_rgba"],
             name="Health Index",
@@ -222,6 +224,6 @@ def register(app) -> None:
                               annotation_text="Crítico (20%)", annotation_font_color="#da3633", annotation_font_size=9)
         fig_health.add_hline(y=60, line_dash="dot", line_color="#e8a020", line_width=1,
                               annotation_text="Alerta (60%)", annotation_font_color="#e8a020", annotation_font_size=9)
-        fig_health.update_layout(**{**_base_layout(), "height": 180, "yaxis": dict(range=[0, 105], gridcolor=GRID_CLR)})
+        fig_health.update_layout(**{**_base_layout(), "height": 180, "yaxis": {"range": [0, 105], "gridcolor": GRID_CLR}})
 
         return gauge, kpi_strip, degrad_badge, rul_display, fig_vib, fig_temp, fig_pres, fig_pwr, fig_health

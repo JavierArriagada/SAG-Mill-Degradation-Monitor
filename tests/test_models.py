@@ -3,11 +3,11 @@ tests/test_models.py
 ─────────────────────
 Tests for Pydantic v2 data models.
 """
+
 import pytest
-from datetime import datetime, timezone
 from pydantic import ValidationError
 
-from src.data.models import SensorReading, Alert, HealthSummary, DegradationMode
+from src.data.models import Alert, DegradationMode, HealthSummary, SensorReading
 
 
 class TestSensorReading:

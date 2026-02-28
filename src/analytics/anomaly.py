@@ -11,9 +11,8 @@ Returns a boolean mask and Z-score series for plotting.
 """
 from __future__ import annotations
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 
 DEFAULT_WINDOW = 24      # hours
 DEFAULT_THRESHOLD = 2.5  # standard deviations
