@@ -11,19 +11,19 @@ flowchart LR
     PUSH([git push]) --> Q
 
     subgraph JOB1["Job: quality"]
-        Q[ruff check .\nruff format --check\nmypy src/ config/]
+        Q[ruff check .<br>ruff format --check<br>mypy src/ config/]
     end
 
     subgraph JOB2["Job: test"]
-        T[pytest\n--cov=src --cov=config\n--cov-report=xml]
+        T[pytest<br>--cov=src --cov=config<br>--cov-report=xml]
     end
 
     subgraph JOB3["Job: docker"]
-        D[docker build\n-t sag-monitor:ci .]
+        D[docker build<br>-t sag-monitor:ci .]
     end
 
     subgraph JOB4["Job: deploy  ⚑ solo main"]
-        DE[doctl apps\ncreate-deployment\n APP_ID]
+        DE[doctl apps<br>create-deployment<br> APP_ID]
     end
 
     Q -->|passed| T -->|passed| D -->|passed + branch=main| DE
@@ -40,12 +40,12 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph ON["on:"]
-        PUSH_MAIN["push → main\npush → develop"]
+        PUSH_MAIN["push → main<br>push → develop"]
         PR_MAIN["pull_request → main"]
     end
 
     PUSH_MAIN -->|ejecuta| Q_T_D_DEPLOY[quality + test + docker + deploy]
-    PR_MAIN -->|ejecuta| Q_T_D[quality + test + docker\n⚠ sin deploy]
+    PR_MAIN -->|ejecuta| Q_T_D[quality + test + docker<br>⚠ sin deploy]
 ```
 
 El job `deploy` tiene una condición explícita:
@@ -83,11 +83,11 @@ Esto evita deploys de código obsoleto cuando se hacen pushes rápidos consecuti
 ```mermaid
 flowchart TD
     CHK[actions/checkout@v4] --> SETUP[setup-python 3.12]
-    SETUP --> CACHE[Cache pip\nhash de requirements-dev.txt]
+    SETUP --> CACHE[Cache pip<br>hash de requirements-dev.txt]
     CACHE --> INST[pip install -r requirements-dev.txt]
-    INST --> RUFF_L[ruff check .\nverifica reglas E/F/W/I/UP/B/C4/SIM]
-    RUFF_L --> RUFF_F[ruff format --check .\nverifica formato sin modificar]
-    RUFF_F --> MYPY[mypy src/ config/\ncontinue-on-error: true]
+    INST --> RUFF_L[ruff check .<br>verifica reglas E/F/W/I/UP/B/C4/SIM]
+    RUFF_L --> RUFF_F[ruff format --check .<br>verifica formato sin modificar]
+    RUFF_F --> MYPY[mypy src/ config/<br>continue-on-error: true]
 ```
 
 **Reglas ruff activas** (`pyproject.toml`):
@@ -113,8 +113,8 @@ flowchart TD
     CHK[checkout] --> SETUP[setup-python 3.12]
     SETUP --> CACHE[Cache pip]
     CACHE --> INST[pip install -r requirements-dev.txt]
-    INST --> PYTEST["pytest\n--cov=src\n--cov=config\n--cov-report=term-missing\n--cov-report=xml"]
-    PYTEST --> ART[upload-artifact\ncoverage.xml\nretención 7 días]
+    INST --> PYTEST["pytest<br>--cov=src<br>--cov=config<br>--cov-report=term-missing<br>--cov-report=xml"]
+    PYTEST --> ART[upload-artifact<br>coverage.xml<br>retención 7 días]
 ```
 
 **Tests incluidos:**
@@ -134,7 +134,7 @@ Cobertura objetivo: `src/` y `config/` — excluye `tests/` y `.venv/`.
 
 ```mermaid
 flowchart TD
-    CHK[checkout] --> BUILD["docker build\n-t sag-monitor:ci ."]
+    CHK[checkout] --> BUILD["docker build<br>-t sag-monitor:ci ."]
     BUILD --> VALID{¿build exitoso?}
     VALID -- Sí --> OK([✅ imagen válida])
     VALID -- No --> FAIL([❌ pipeline detenido])
@@ -153,7 +153,7 @@ sequenceDiagram
     participant DO as DigitalOcean API
     participant APP as App Platform
 
-    GHA->>DOCTL: digitalocean/action-doctl@v2\ntoken: DIGITALOCEAN_ACCESS_TOKEN
+    GHA->>DOCTL: digitalocean/action-doctl@v2<br>token: DIGITALOCEAN_ACCESS_TOKEN
     DOCTL-->>GHA: autenticado
 
     GHA->>DOCTL: doctl apps create-deployment APP_ID
@@ -188,8 +188,8 @@ flowchart LR
         OS & HASH --> KEY["linux-pip-abc123def"]
     end
 
-    KEY -->|hit| RESTORE[Restaura .cache/pip\n~30s ahorrados]
-    KEY -->|miss| FRESH[pip install\ncrea caché nuevo]
+    KEY -->|hit| RESTORE[Restaura .cache/pip<br>~30s ahorrados]
+    KEY -->|miss| FRESH[pip install<br>crea caché nuevo]
 ```
 
 La clave incluye el hash de `requirements-dev.txt`. Si cambian las dependencias, la caché se invalida automáticamente.

@@ -12,15 +12,15 @@ El sistema tiene una arquitectura de datos de **dos velocidades** (inspirada en 
 graph TD
     subgraph BATCH["Pipeline Batch — una sola vez al arrancar"]
         direction LR
-        B1["generate_history\n90 días × 24 h × 2 equipos\n= 4 320 lecturas/equipo"] --> B2["compute_health_summary\n× 4 320 veces por equipo"] --> B3["insert_readings\nBulk INSERT — executemany"] --> B4["derive_alerts\nstate machine sobre la lista"] --> B5["insert_alerts\nINSERT OR IGNORE"]
+        B1["generate_history<br>90 días × 24 h × 2 equipos<br>= 4 320 lecturas/equipo"] --> B2["compute_health_summary<br>× 4 320 veces por equipo"] --> B3["insert_readings<br>Bulk INSERT — executemany"] --> B4["derive_alerts<br>state machine sobre la lista"] --> B5["insert_alerts<br>INSERT OR IGNORE"]
     end
 
     subgraph STREAM["Pipeline Tiempo Real — cada 30 segundos"]
         direction LR
-        S1["dcc.Interval\ntrigger del navegador"] --> S2["generate_realtime_reading\npor equipo"] --> S3["compute_health_summary\n× 1 por equipo"] --> S4["insert_readings\n2 filas"] --> S5["query SQLite\nget_readings + get_latest"] --> S6["serve Plotly\nal navegador"]
+        S1["dcc.Interval<br>trigger del navegador"] --> S2["generate_realtime_reading<br>por equipo"] --> S3["compute_health_summary<br>× 1 por equipo"] --> S4["insert_readings<br>2 filas"] --> S5["query SQLite<br>get_readings + get_latest"] --> S6["serve Plotly<br>al navegador"]
     end
 
-    BATCH -->|"SQLite con 8 640 filas\ncomo punto de partida"| STREAM
+    BATCH -->|"SQLite con 8 640 filas<br>como punto de partida"| STREAM
 ```
 
 ---
@@ -40,25 +40,25 @@ initialize_db()   # ← esta línea desencadena todo el pipeline batch
 
 ```mermaid
 flowchart TD
-    SEED["rng = np.random.default_rng(seed=42)\nreproducible en cada arranque"] --> TIME
+    SEED["rng = np.random.default_rng(seed=42)<br>reproducible en cada arranque"] --> TIME
 
-    TIME["Línea de tiempo:\nend_ts = ahora UTC (minutos truncados)\nstart_ts = end_ts − 90 días\ntimestamps = [start_ts + h×1h for h in range(2160)]"]
+    TIME["Línea de tiempo:<br>end_ts = ahora UTC (minutos truncados)<br>start_ts = end_ts − 90 días<br>timestamps = [start_ts + h×1h for h in range(2160)]"]
 
-    TIME --> PLAN_SAG["_plan_events('SAG-01')\n1–3 DegradationEvents\nrng.integers + rng.choice"]
-    TIME --> PLAN_BALL["_plan_events('BALL-01')\n1–3 DegradationEvents"]
+    TIME --> PLAN_SAG["_plan_events('SAG-01')<br>1–3 DegradationEvents<br>rng.integers + rng.choice"]
+    TIME --> PLAN_BALL["_plan_events('BALL-01')<br>1–3 DegradationEvents"]
 
     PLAN_SAG --> GEN_SAG
     PLAN_BALL --> GEN_BALL
 
     subgraph GEN_SAG["SAG-01: 2 160 lecturas"]
-        SAG_LOOP["for h in range(2160):\n    _generate_sag_reading(h, timestamps[h], events, rng)"]
+        SAG_LOOP["for h in range(2160):<br>    _generate_sag_reading(h, timestamps[h], events, rng)"]
     end
 
     subgraph GEN_BALL["BALL-01: 2 160 lecturas"]
-        BALL_LOOP["for h in range(2160):\n    _generate_ball_reading(h, timestamps[h], events, rng)"]
+        BALL_LOOP["for h in range(2160):<br>    _generate_ball_reading(h, timestamps[h], events, rng)"]
     end
 
-    GEN_SAG & GEN_BALL --> OUT["dict[\n  'SAG-01': list[SensorReading] ×2160,\n  'BALL-01': list[SensorReading] ×2160\n]"]
+    GEN_SAG & GEN_BALL --> OUT["dict[<br>  'SAG-01': list[SensorReading] ×2160,<br>  'BALL-01': list[SensorReading] ×2160<br>]"]
 ```
 
 **Decisión clave — loops Python vs NumPy vectorizado:**
@@ -122,13 +122,13 @@ La denormalización de `health_index` en `SensorReading` es una **decisión de i
 
 ```mermaid
 flowchart TD
-    INPUT["reading_list: list[SensorReading]\n2 160 objetos Pydantic"] --> UNPACK
+    INPUT["reading_list: list[SensorReading]<br>2 160 objetos Pydantic"] --> UNPACK
 
-    UNPACK["List comprehension → list of tuples\nrows = [\n  (r.timestamp.isoformat(),\n   r.equipment_id,\n   r.vibration_mms,\n   ...\n   r.degradation_mode.value,\n   r.health_index)\n  for r in readings\n]"]
+    UNPACK["List comprehension → list of tuples<br>rows = [<br>  (r.timestamp.isoformat(),<br>   r.equipment_id,<br>   r.vibration_mms,<br>   ...<br>   r.degradation_mode.value,<br>   r.health_index)<br>  for r in readings<br>]"]
 
-    UNPACK --> LOCK["with _lock, conn:\n    conn.executemany(INSERT, rows)"]
+    UNPACK --> LOCK["with _lock, conn:<br>    conn.executemany(INSERT, rows)"]
 
-    LOCK --> COMMIT["Transacción atómica\n2 160 filas en un solo commit"]
+    LOCK --> COMMIT["Transacción atómica<br>2 160 filas en un solo commit"]
 ```
 
 **Por qué `executemany` y no un loop de `execute`:**
@@ -145,21 +145,21 @@ SQLite no tiene tipo `DATETIME`. El driver `sqlite3` de Python puede hacer la co
 
 ```mermaid
 flowchart TD
-    INPUT["reading_list: list[SensorReading]\nordenada cronológicamente"] --> LOOP
+    INPUT["reading_list: list[SensorReading]<br>ordenada cronológicamente"] --> LOOP
 
-    LOOP["for reading in readings:\n    checks = [(variable, value, warn, alert), ...]"]
+    LOOP["for reading in readings:<br>    checks = [(variable, value, warn, alert), ...]"]
 
     LOOP --> CHECK{"valor > alert_thresh?"}
     CHECK -- Sí --> CRIT["severity = CRITICAL"]
     CHECK -- No --> CHECK2{"valor > warn_thresh?"}
     CHECK2 -- Sí --> WARN["severity = WARNING"]
-    CHECK2 -- No --> CLEAR["in_alert[key] = False\nno emite nada"]
+    CHECK2 -- No --> CLEAR["in_alert[key] = False<br>no emite nada"]
 
-    CRIT & WARN --> DEDUP{"in_alert[key]\n== True?"}
-    DEDUP -- No --> EMIT["Emite Alert\nuuid4() como id\nin_alert[key] = True"]
-    DEDUP -- Sí --> SKIP["Silencio\n(ya se avisó)"]
+    CRIT & WARN --> DEDUP{"in_alert[key]<br>== True?"}
+    DEDUP -- No --> EMIT["Emite Alert<br>uuid4() como id<br>in_alert[key] = True"]
+    DEDUP -- Sí --> SKIP["Silencio<br>(ya se avisó)"]
 
-    EMIT --> OUT["list[Alert]\n~decenas a centenares\ndependiendo de eventos embebidos"]
+    EMIT --> OUT["list[Alert]<br>~decenas a centenares<br>dependiendo de eventos embebidos"]
 ```
 
 **El estado `in_alert` es crítico:** sin él, cada lectura anómala generaría una alerta, produciendo miles de alertas por evento de degradación. La máquina de estados garantiza que se emite exactamente **una alerta por cruce de umbral**, independientemente de cuántas lecturas consecutivas superen el umbral.
@@ -218,15 +218,15 @@ def generate_realtime_reading(equipment_id: str) -> SensorReading:
 
 ```mermaid
 flowchart TD
-    NOW["datetime.now(UTC)\nts = ahora con segundos=0"] --> SEED
+    NOW["datetime.now(UTC)<br>ts = ahora con segundos=0"] --> SEED
 
-    SEED["seed = int(now.timestamp()) % 10_000\n~cambia cada segundo\ngarantiza variación entre llamadas"] --> RNG
+    SEED["seed = int(now.timestamp()) % 10_000<br>~cambia cada segundo<br>garantiza variación entre llamadas"] --> RNG
 
-    RNG["rng = np.random.default_rng(seed)\nnueva semilla → nueva secuencia\nde números aleatorios"] --> GEN
+    RNG["rng = np.random.default_rng(seed)<br>nueva semilla → nueva secuencia<br>de números aleatorios"] --> GEN
 
-    GEN["_generate_sag_reading(h=0, ts, events=[], rng)\no _generate_ball_reading(...)"]
+    GEN["_generate_sag_reading(h=0, ts, events=[], rng)<br>o _generate_ball_reading(...)"]
 
-    GEN --> SR["SensorReading\ncon ruido fresco sobre baseline\nsin eventos de degradación activos"]
+    GEN --> SR["SensorReading<br>con ruido fresco sobre baseline<br>sin eventos de degradación activos"]
 ```
 
 **Decisión clave — `events=[]` en tiempo real:**
@@ -245,15 +245,15 @@ El módulo 10 000 garantiza que la semilla sea un número manejable (evita probl
 graph LR
     subgraph WRITE["Write Path"]
         direction TB
-        WR1["insert_readings([reading])\n1 fila → executemany\ntransacción atómica"]
-        WR2["insert_alerts(alerts)\nINSERT OR IGNORE"]
+        WR1["insert_readings([reading])<br>1 fila → executemany<br>transacción atómica"]
+        WR2["insert_alerts(alerts)<br>INSERT OR IGNORE"]
     end
 
     subgraph READ["Read Path"]
         direction TB
-        RD1["get_readings(eq_id, hours=N)\nSELECT * WHERE eq+ts\nORDER BY timestamp ASC\n→ DataFrame"]
-        RD2["get_latest(eq_id)\nSELECT * ORDER BY ts DESC LIMIT 1\n→ dict (fila más reciente para KPIs)"]
-        RD3["get_alerts(eq_id, severity, days)\nSELECT * con filtros dinámicos\n→ DataFrame"]
+        RD1["get_readings(eq_id, hours=N)<br>SELECT * WHERE eq+ts<br>ORDER BY timestamp ASC<br>→ DataFrame"]
+        RD2["get_latest(eq_id)<br>SELECT * ORDER BY ts DESC LIMIT 1<br>→ dict (fila más reciente para KPIs)"]
+        RD3["get_alerts(eq_id, severity, days)<br>SELECT * con filtros dinámicos<br>→ DataFrame"]
     end
 
     CALLBACK[Dash callback] --> WRITE
@@ -279,34 +279,34 @@ Todas las visualizaciones de series temporales en Plotly esperan DataFrames con 
 ```mermaid
 graph TD
     subgraph SOURCES["Fuentes de datos"]
-        SIM_HIST["Simulador histórico\nnp.random.default_rng(42)\ndeterminista y reproducible"]
-        SIM_RT["Simulador tiempo real\nnp.random.default_rng(timestamp)\nestocástico controlado"]
+        SIM_HIST["Simulador histórico<br>np.random.default_rng(42)<br>determinista y reproducible"]
+        SIM_RT["Simulador tiempo real<br>np.random.default_rng(timestamp)<br>estocástico controlado"]
     end
 
     subgraph MODELS["Modelos de dominio (Pydantic)"]
-        SR["SensorReading\nvalidación de rangos físicos\npunto de verdad del sensor"]
-        HS["HealthSummary\nobjeto efímero\nno persiste a BD"]
-        AL["Alert\npersiste con UUID\nINSERT OR IGNORE"]
+        SR["SensorReading<br>validación de rangos físicos<br>punto de verdad del sensor"]
+        HS["HealthSummary<br>objeto efímero<br>no persiste a BD"]
+        AL["Alert<br>persiste con UUID<br>INSERT OR IGNORE"]
     end
 
     subgraph TRANSFORMS["Transformaciones"]
-        T1["compute_health_summary\nfunción pura\nSensorReading → HealthSummary"]
-        T2["derive_alerts\nstateful\nlist[SensorReading] → list[Alert]"]
-        T3["annotate_anomalies\nZ-score rodante\nDataFrame → DataFrame+zscore"]
+        T1["compute_health_summary<br>función pura<br>SensorReading → HealthSummary"]
+        T2["derive_alerts<br>stateful<br>list[SensorReading] → list[Alert]"]
+        T3["annotate_anomalies<br>Z-score rodante<br>DataFrame → DataFrame+zscore"]
     end
 
     subgraph STORE["Almacenamiento"]
-        DB[(SQLite\nreadings + alerts\n2 tablas, 2 índices)]
+        DB[(SQLite<br>readings + alerts<br>2 tablas, 2 índices)]
     end
 
     subgraph SERVE["Serving layer"]
-        DF1["get_readings → DataFrame\npara series temporales"]
-        DF2["get_latest → dict\npara KPIs instantáneos"]
-        DF3["get_alerts → DataFrame\npara tabla de alertas"]
+        DF1["get_readings → DataFrame<br>para series temporales"]
+        DF2["get_latest → dict<br>para KPIs instantáneos"]
+        DF3["get_alerts → DataFrame<br>para tabla de alertas"]
     end
 
     subgraph UI["Presentación"]
-        PLOTLY["Figuras Plotly\ncada 30s"]
+        PLOTLY["Figuras Plotly<br>cada 30s"]
     end
 
     SIM_HIST & SIM_RT --> SR
@@ -339,8 +339,8 @@ Pydantic v2 por defecto permite mutación (`model_config = ConfigDict(frozen=Fal
 ```mermaid
 graph LR
     subgraph VOLUME["Volumen de datos"]
-        RD["readings\n90 días × 24h × 2 equipos\n= 4 320 filas iniciales\n+2 filas cada 30s"]
-        AL["alerts\n~50–200 filas\ndependiendo de eventos embebidos\nretención: 30 días"]
+        RD["readings<br>90 días × 24h × 2 equipos<br>= 4 320 filas iniciales<br>+2 filas cada 30s"]
+        AL["alerts<br>~50–200 filas<br>dependiendo de eventos embebidos<br>retención: 30 días"]
     end
 
     subgraph QUERIES["Queries por callback (cada 30s)"]
@@ -350,8 +350,8 @@ graph LR
     end
 
     subgraph INDEXES["Índices SQLite"]
-        I1["idx_readings_eq_ts\n(equipment_id, timestamp)\ncubre el WHERE dominante"]
-        I2["idx_alerts_eq_ts\n(equipment_id, timestamp)\ncubre los filtros de alertas"]
+        I1["idx_readings_eq_ts<br>(equipment_id, timestamp)<br>cubre el WHERE dominante"]
+        I2["idx_alerts_eq_ts<br>(equipment_id, timestamp)<br>cubre los filtros de alertas"]
     end
 ```
 
@@ -368,19 +368,19 @@ SQLite maneja cómodamente este volumen. El índice compuesto `(equipment_id, ti
 ```mermaid
 graph TD
     subgraph G1["Garantía 1: Atomicidad de escritura"]
-        A1["insert_readings usa\nwith _lock, conn:\n    executemany(...)\n→ todas las filas o ninguna"]
+        A1["insert_readings usa<br>with _lock, conn:<br>    executemany(...)<br>→ todas las filas o ninguna"]
     end
 
     subgraph G2["Garantía 2: Idempotencia de alertas"]
-        A2["insert_alerts usa INSERT OR IGNORE\nUUID como PK\n→ re-insertar el mismo alert es no-op"]
+        A2["insert_alerts usa INSERT OR IGNORE<br>UUID como PK<br>→ re-insertar el mismo alert es no-op"]
     end
 
     subgraph G3["Garantía 3: Reproducibilidad del histórico"]
-        A3["generate_history(seed=42)\nsiempre produce la misma historia\n→ cada reinicio es determinista"]
+        A3["generate_history(seed=42)<br>siempre produce la misma historia<br>→ cada reinicio es determinista"]
     end
 
     subgraph G4["Garantía 4: Thread safety"]
-        A4["threading.Lock() a nivel de módulo\ncheck_same_thread=False\n→ Dash multi-thread seguro"]
+        A4["threading.Lock() a nivel de módulo<br>check_same_thread=False<br>→ Dash multi-thread seguro"]
     end
 ```
 
@@ -389,18 +389,18 @@ graph TD
 ```mermaid
 graph TD
     subgraph L1["Limitación 1: SQLite es efímero en App Platform"]
-        LL1["Cada reinicio del container\nllama initialize_db() de nuevo\nlos datos en tiempo real se pierden\nsolución: migrar a PostgreSQL"]
+        LL1["Cada reinicio del container<br>llama initialize_db() de nuevo<br>los datos en tiempo real se pierden<br>solución: migrar a PostgreSQL"]
     end
 
     subgraph L2["Limitación 2: No hay ventana deslizante en BD"]
-        LL2["readings crece indefinidamente\nno hay LIMIT o TTL de filas antiguas\nsolución: agregar vacuumjob periódico\no particionamiento por mes"]
+        LL2["readings crece indefinidamente<br>no hay LIMIT o TTL de filas antiguas<br>solución: agregar vacuumjob periódico<br>o particionamiento por mes"]
     end
 
     subgraph L3["Limitación 3: health_index desnormalizado"]
-        LL3["Si cambia el algoritmo HI,\nlas filas históricas tienen el HI antiguo\nsolución: recalcular con force_reseed=True\no versionar el algoritmo"]
+        LL3["Si cambia el algoritmo HI,<br>las filas históricas tienen el HI antiguo<br>solución: recalcular con force_reseed=True<br>o versionar el algoritmo"]
     end
 
     subgraph L4["Limitación 4: derive_alerts es O(n×m)"]
-        LL4["n = lecturas, m = variables por lectura\nen 90 días: 2160 × 3 = 6480 evaluaciones\naceptable en startup, no en streaming continuo"]
+        LL4["n = lecturas, m = variables por lectura<br>en 90 días: 2160 × 3 = 6480 evaluaciones<br>aceptable en startup, no en streaming continuo"]
     end
 ```

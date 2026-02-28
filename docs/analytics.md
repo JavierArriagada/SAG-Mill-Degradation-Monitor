@@ -20,10 +20,10 @@ HI = 0.30 · S_vib  +  0.25 · S_temp  +  0.20 · S_pres  +  0.25 · S_pow
 
 ```mermaid
 flowchart TD
-    SR([SensorReading]) --> VIB[_vibration_score\nvibration_mms]
-    SR --> TMP[_thermal_score\nbearing_temp_c]
-    SR --> PRS[_pressure_score\nhydraulic_pressure_bar]
-    SR --> PWR[_power_score\npower_kw]
+    SR([SensorReading]) --> VIB[_vibration_score<br>vibration_mms]
+    SR --> TMP[_thermal_score<br>bearing_temp_c]
+    SR --> PRS[_pressure_score<br>hydraulic_pressure_bar]
+    SR --> PWR[_power_score<br>power_kw]
 
     VIB -->|× 0.30| SUM
     TMP -->|× 0.25| SUM
@@ -31,7 +31,7 @@ flowchart TD
     PWR -->|× 0.25| SUM
 
     SUM[Suma ponderada] --> CLIP[clip 0–100]
-    CLIP --> HS([HealthSummary\nhealth_index = HI])
+    CLIP --> HS([HealthSummary<br>health_index = HI])
 ```
 
 ---
@@ -41,12 +41,12 @@ flowchart TD
 ```mermaid
 flowchart TD
     V([vibration_mms]) --> ZA{≤ zone_a?}
-    ZA -- Sí --> RA["100 − (vib/zone_a)×15\nRango: 85–100"]
+    ZA -- Sí --> RA["100 − (vib/zone_a)×15<br>Rango: 85–100"]
     ZA -- No --> ZB{≤ zone_b?}
-    ZB -- Sí --> RB["85 − t×20\nRango: 65–85"]
+    ZB -- Sí --> RB["85 − t×20<br>Rango: 65–85"]
     ZB -- No --> ZC{≤ zone_c?}
-    ZC -- Sí --> RC["65 − t×35\nRango: 30–65"]
-    ZC -- No --> RD["30 − t×30\nRango: 0–30"]
+    ZC -- Sí --> RC["65 − t×35<br>Rango: 30–65"]
+    ZC -- No --> RD["30 − t×30<br>Rango: 0–30"]
 
     RA & RB & RC & RD --> SVIB([S_vib ∈ 0–100])
 ```
@@ -67,12 +67,12 @@ flowchart TD
 ```mermaid
 flowchart TD
     T([bearing_temp_c]) --> TW{≤ warning?}
-    TW -- Sí --> RT["100 − t×15\nRango: 85–100\nbaseline=20°C"]
+    TW -- Sí --> RT["100 − t×15<br>Rango: 85–100<br>baseline=20°C"]
     TW -- No --> TA{≤ alert?}
-    TA -- Sí --> RA2["85 − t×35\nRango: 50–85"]
+    TA -- Sí --> RA2["85 − t×35<br>Rango: 50–85"]
     TA -- No --> TC{≤ critical?}
-    TC -- Sí --> RC2["50 − t×40\nRango: 10–50"]
-    TC -- No --> RD2["max(0, 10 − excess×2)\nRango: 0–10"]
+    TC -- Sí --> RC2["50 − t×40<br>Rango: 10–50"]
+    TC -- No --> RD2["max(0, 10 − excess×2)<br>Rango: 0–10"]
 
     RT & RA2 & RC2 & RD2 --> STEMP([S_temp ∈ 0–100])
 ```
@@ -92,12 +92,12 @@ flowchart TD
 ```mermaid
 flowchart TD
     P([hydraulic_pressure_bar]) --> PIN{p_min ≤ P ≤ p_max?}
-    PIN -- Sí --> ROK["100 − t×10\npenaliza dist. del punto medio"]
+    PIN -- Sí --> ROK["100 − t×10<br>penaliza dist. del punto medio"]
     PIN -- No --> PLOW{P < p_min?}
-    PLOW -- Sí --> RLOW["max(0, 90 − drop×150)\nbaja presión"]
+    PLOW -- Sí --> RLOW["max(0, 90 − drop×150)<br>baja presión"]
     PLOW -- No --> PHIGH{P ≤ critical_high?}
-    PHIGH -- Sí --> RHIGH["90 − t×60\nsobrepresión"]
-    PHIGH -- No --> RCRIT["0\ncrítico"]
+    PHIGH -- Sí --> RHIGH["90 − t×60<br>sobrepresión"]
+    PHIGH -- No --> RCRIT["0<br>crítico"]
 
     ROK & RLOW & RHIGH & RCRIT --> SPRES([S_pres ∈ 0–100])
 ```
@@ -117,12 +117,12 @@ flowchart TD
 ```mermaid
 flowchart TD
     W([power_kw]) --> WLO{W < p_min?}
-    WLO -- Sí --> RLO["max(0, 80 − t×120)\nbajo consumo"]
+    WLO -- Sí --> RLO["max(0, 80 − t×120)<br>bajo consumo"]
     WLO -- No --> WNO{W ≤ nominal×1.05?}
-    WNO -- Sí --> RNO["100\nzona nominal"]
+    WNO -- Sí --> RNO["100<br>zona nominal"]
     WNO -- No --> WMX{W ≤ p_max?}
-    WMX -- Sí --> RMX["100 − t×25\nsobre nominal"]
-    WMX -- No --> ROV["max(0, 75 − excess×150)\nsobre máximo"]
+    WMX -- Sí --> RMX["100 − t×25<br>sobre nominal"]
+    WMX -- No --> ROV["max(0, 75 − excess×150)<br>sobre máximo"]
 
     RLO & RNO & RMX & ROV --> SPOW([S_pow ∈ 0–100])
 ```
@@ -147,14 +147,14 @@ Estimación en días hasta que el HI alcanza el umbral crítico de 20. Se calcul
 
 ```mermaid
 flowchart TD
-    HS([Serie HI histórica]) --> WIN["Ventana últimas 48 h\n(o toda la serie si es menor)"]
-    WIN --> FIT["Regresión lineal\ncoeffs = polyfit(x, y, 1)\nslope = coeff[0]"]
+    HS([Serie HI histórica]) --> WIN["Ventana últimas 48 h<br>(o toda la serie si es menor)"]
+    WIN --> FIT["Regresión lineal<br>coeffs = polyfit(x, y, 1)<br>slope = coeff[0]"]
     FIT --> CHK{slope ≥ 0?}
-    CHK -- Sí --> STABLE([Retorna None\n'tendencia estable o mejorando'])
+    CHK -- Sí --> STABLE([Retorna None<br>'tendencia estable o mejorando'])
     CHK -- No --> CURR[current_hi = último valor]
     CURR --> CRIT{current_hi ≤ 20?}
-    CRIT -- Sí --> ZERO([Retorna 0.0\n'ya en zona crítica'])
-    CRIT -- No --> CALC["hours = (current_hi − 20) / |slope|\nrul_days = hours / 24"]
+    CRIT -- Sí --> ZERO([Retorna 0.0<br>'ya en zona crítica'])
+    CRIT -- No --> CALC["hours = (current_hi − 20) / |slope|<br>rul_days = hours / 24"]
     CALC --> ROUND([Retorna rul_days redondeado a 1 decimal])
 ```
 
@@ -174,7 +174,7 @@ graph LR
         H100["100 (nuevo)"] -->|degradación| H80["80"] -->|degradación| H50["50"] -->|degradación| H20["20 ← crítico"] -->|falla| H0["0"]
     end
 
-    H50 -->|extrapolación lineal| RUL["RUL = X días\nhasta HI=20"]
+    H50 -->|extrapolación lineal| RUL["RUL = X días<br>hasta HI=20"]
 ```
 
 ---
@@ -197,14 +197,14 @@ anomalía si |z(t)| > 2.5
 
 ```mermaid
 flowchart TD
-    SER([Serie temporal\npor variable]) --> ROLL["rolling window = 24 h\nmin_periods = 4"]
+    SER([Serie temporal<br>por variable]) --> ROLL["rolling window = 24 h<br>min_periods = 4"]
     ROLL --> MEAN["μ_t = media rodante"]
-    ROLL --> STD["σ_t = desviación estándar rodante\n(0 → NaN para evitar división)"]
+    ROLL --> STD["σ_t = desviación estándar rodante<br>(0 → NaN para evitar división)"]
     MEAN & STD --> ZSCORE["z_t = (x_t − μ_t) / σ_t"]
     ZSCORE --> MASK{"|z_t| > 2.5?"}
     MASK -- Sí --> ANO([anomaly = True])
     MASK -- No --> NORM([anomaly = False])
-    ANO & NORM --> OUT["DataFrame con columnas:\n{variable}_zscore\n{variable}_anomaly"]
+    ANO & NORM --> OUT["DataFrame con columnas:<br>{variable}_zscore<br>{variable}_anomaly"]
 ```
 
 ### Detección de períodos
@@ -214,10 +214,10 @@ stateDiagram-v2
     [*] --> Normal
     Normal --> Anomaly : |z| > 2.5
     Anomaly --> Normal : |z| ≤ 2.5
-    Anomaly --> Anomaly : |z| > 2.5\n(acumula peak_z)
+    Anomaly --> Anomaly : |z| > 2.5<br>(acumula peak_z)
 
     Normal : anomaly = False
-    Anomaly : anomaly = True\ntrack peak_zscore
+    Anomaly : anomaly = True<br>track peak_zscore
 
     Normal --> [*]
 ```
@@ -242,26 +242,26 @@ El simulador genera historia reproducible con eventos de degradación realistas.
 
 ```mermaid
 flowchart TD
-    SEED["SIMULATION_SEED = 42\nnp.random.default_rng(seed)"] --> PLAN
+    SEED["SIMULATION_SEED = 42<br>np.random.default_rng(seed)"] --> PLAN
 
-    PLAN["_plan_events\n1–3 eventos por equipo\ndentro del historial"] --> EVENTS
+    PLAN["_plan_events<br>1–3 eventos por equipo<br>dentro del historial"] --> EVENTS
 
     subgraph EVENTS["DegradationEvents"]
-        EV1["bearing\nstart_hour: aleatorio\nduration: 48–240 h\nseverity: 0.4–0.95"]
-        EV2["liner / hydraulic\n(solo SAG-01)"]
-        EV3["misalignment\n(solo BALL-01)"]
+        EV1["bearing<br>start_hour: aleatorio<br>duration: 48–240 h<br>severity: 0.4–0.95"]
+        EV2["liner / hydraulic<br>(solo SAG-01)"]
+        EV3["misalignment<br>(solo BALL-01)"]
     end
 
-    EVENTS --> GEN["Genera N=days×24 lecturas\npor equipo"]
+    EVENTS --> GEN["Genera N=days×24 lecturas<br>por equipo"]
 
     subgraph MODES["Funciones de degradación"]
-        BD["bearing_degradation(t)\nvib ↑, temp ↑"]
-        LD["liner_degradation(t)\npow ↑, load ↑, wear ↑"]
-        HD["hydraulic_degradation(t)\npres fluctúa"]
-        MD["misalignment_degradation(t)\nvib ↑ patrón cíclico"]
+        BD["bearing_degradation(t)<br>vib ↑, temp ↑"]
+        LD["liner_degradation(t)<br>pow ↑, load ↑, wear ↑"]
+        HD["hydraulic_degradation(t)<br>pres fluctúa"]
+        MD["misalignment_degradation(t)<br>vib ↑ patrón cíclico"]
     end
 
-    GEN --> MODES --> OUT["list[SensorReading]\ncon health_index calculado"]
+    GEN --> MODES --> OUT["list[SensorReading]<br>con health_index calculado"]
 ```
 
 ### Parámetros del simulador
@@ -281,19 +281,19 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    RD([SensorReading]) --> CHK{"Para cada variable:\nvibration_mms\nbearing_temp_c\nhydraulic_pressure_bar"}
+    RD([SensorReading]) --> CHK{"Para cada variable:<br>vibration_mms<br>bearing_temp_c<br>hydraulic_pressure_bar"}
 
     CHK --> CMP1{valor > alert_thresh?}
-    CMP1 -- Sí --> CRIT["severity = CRITICAL\n🔴"]
+    CMP1 -- Sí --> CRIT["severity = CRITICAL<br>🔴"]
     CMP1 -- No --> CMP2{valor > warn_thresh?}
-    CMP2 -- Sí --> WARN["severity = WARNING\n🟡"]
-    CMP2 -- No --> CLEAR[Sin alerta\nclear in_alert flag]
+    CMP2 -- Sí --> WARN["severity = WARNING<br>🟡"]
+    CMP2 -- No --> CLEAR[Sin alerta<br>clear in_alert flag]
 
-    CRIT & WARN --> DEDUP{¿ya en alerta\npara esta variable?}
-    DEDUP -- No --> EMIT["emit Alert\n(deduplica: una por cruce)"]
+    CRIT & WARN --> DEDUP{¿ya en alerta<br>para esta variable?}
+    DEDUP -- No --> EMIT["emit Alert<br>(deduplica: una por cruce)"]
     DEDUP -- Sí --> SKIP[Skip]
 
-    EMIT --> DB[(SQLite\nalerts)]
+    EMIT --> DB[(SQLite<br>alerts)]
 ```
 
 **Severidades disponibles:**

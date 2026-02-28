@@ -9,19 +9,19 @@ Guía completa de configuración, operación y troubleshooting del entorno de pr
 ```mermaid
 graph TD
     subgraph GH["GitHub"]
-        REPO[Repositorio\ntu-usuario/sag-monitor]
-        GHA[GitHub Actions\nCI/CD pipeline]
-        SECRETS[Secrets & Variables\nDIGITALOCEAN_ACCESS_TOKEN\nDIGITALOCEAN_APP_ID\nDO_APP_URL]
+        REPO[Repositorio<br>tu-usuario/sag-monitor]
+        GHA[GitHub Actions<br>CI/CD pipeline]
+        SECRETS[Secrets & Variables<br>DIGITALOCEAN_ACCESS_TOKEN<br>DIGITALOCEAN_APP_ID<br>DO_APP_URL]
     end
 
     subgraph DO["DigitalOcean"]
         subgraph APP["App Platform"]
-            BUILD[Build container\npip install -r requirements.txt]
-            RUN[Runtime container\ngunicorn app:server]
-            DB[(SQLite\nsag_monitor.db\nlocal al container)]
-            HEALTH[Health check\nGET /\ncada 30s]
+            BUILD[Build container<br>pip install -r requirements.txt]
+            RUN[Runtime container<br>gunicorn app:server]
+            DB[(SQLite<br>sag_monitor.db<br>local al container)]
+            HEALTH[Health check<br>GET /<br>cada 30s]
         end
-        API[DigitalOcean API\nv2/apps]
+        API[DigitalOcean API<br>v2/apps]
         TOKEN[Personal Access Token]
     end
 
@@ -111,18 +111,18 @@ spec:
 
 ```mermaid
 flowchart TD
-    A([Inicio]) --> B[Crear cuenta\ncloud.digitalocean.com]
+    A([Inicio]) --> B[Crear cuenta<br>cloud.digitalocean.com]
     B --> C[Apps → Create App]
-    C --> D[Conectar GitHub\ntu-usuario/sag-monitor]
+    C --> D[Conectar GitHub<br>tu-usuario/sag-monitor]
     D --> E[Seleccionar rama: main]
     E --> F{¿Detecta .do/app.yaml?}
     F -- Sí --> G[Importa config automáticamente]
-    F -- No --> H[Configurar manualmente\nbuild/run commands]
-    G & H --> I[Desactivar Autodeploy\nSettings → Autodeploy → OFF]
-    I --> J[Anotar App ID\nURL del dashboard: .../apps/UUID]
-    J --> K[Crear Personal Access Token\nAccount → API → New Token\nRead + Write]
-    K --> L[Configurar GitHub Secrets\nSettings → Secrets → Actions]
-    L --> M([Listo: el próximo push\na main dispara CI + deploy])
+    F -- No --> H[Configurar manualmente<br>build/run commands]
+    G & H --> I[Desactivar Autodeploy<br>Settings → Autodeploy → OFF]
+    I --> J[Anotar App ID<br>URL del dashboard: .../apps/UUID]
+    J --> K[Crear Personal Access Token<br>Account → API → New Token<br>Read + Write]
+    K --> L[Configurar GitHub Secrets<br>Settings → Secrets → Actions]
+    L --> M([Listo: el próximo push<br>a main dispara CI + deploy])
 ```
 
 ---
@@ -132,12 +132,12 @@ flowchart TD
 ```mermaid
 graph LR
     subgraph SECRETS["GitHub → Settings → Secrets → Actions"]
-        S1["DIGITALOCEAN_ACCESS_TOKEN\ntipo: Secret\nvalor: dop_v1_xxxx..."]
-        S2["DIGITALOCEAN_APP_ID\ntipo: Secret\nvalor: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"]
+        S1["DIGITALOCEAN_ACCESS_TOKEN<br>tipo: Secret<br>valor: dop_v1_xxxx..."]
+        S2["DIGITALOCEAN_APP_ID<br>tipo: Secret<br>valor: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"]
     end
 
     subgraph VARS["GitHub → Settings → Variables → Actions"]
-        V1["DO_APP_URL\ntipo: Variable\nvalor: https://sag-monitor-xxxxx.ondigitalocean.app"]
+        V1["DO_APP_URL<br>tipo: Variable<br>valor: https://sag-monitor-xxxxx.ondigitalocean.app"]
     end
 
     S1 & S2 -->|usados en job deploy| GHA[GitHub Actions]
@@ -209,10 +209,10 @@ DO App Platform verifica el estado del servicio haciendo `GET /` cada 30 segundo
 
 ```mermaid
 flowchart LR
-    DO_HC[DO Health Checker\ncada 30s] -->|GET /| GUNICORN[gunicorn\napp:server]
+    DO_HC[DO Health Checker<br>cada 30s] -->|GET /| GUNICORN[gunicorn<br>app:server]
     GUNICORN -->|200 OK| DO_HC
 
-    DO_HC -->|timeout > 10s\no 3 fallos| RESTART[Reinicia container]
+    DO_HC -->|timeout > 10s<br>o 3 fallos| RESTART[Reinicia container]
     RESTART --> GUNICORN
 ```
 
@@ -224,9 +224,9 @@ El parámetro `initial_delay_seconds: 20` da tiempo a gunicorn para iniciar y ej
 
 ```mermaid
 graph TD
-    APP[App container\n/app/sag_monitor.db] -->|restart| LOST[⚠️ datos perdidos]
+    APP[App container<br>/app/sag_monitor.db] -->|restart| LOST[⚠️ datos perdidos]
 
-    note["Cada reinicio ejecuta initialize_db()\ny regenera 90 días de historia\ndesde SIMULATION_SEED=42\n→ historia reproducible pero no persistente"]
+    note["Cada reinicio ejecuta initialize_db()<br>y regenera 90 días de historia<br>desde SIMULATION_SEED=42<br>→ historia reproducible pero no persistente"]
 ```
 
 > **SQLite en App Platform es efímero.** Cada deploy o reinicio crea una nueva base de datos desde cero. Para producción con datos reales:
